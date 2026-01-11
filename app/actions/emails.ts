@@ -1,0 +1,433 @@
+"use server";
+
+import { Resend } from "resend";
+import { connectToDatabase } from "@/lib/db";
+import { ObjectId } from "mongodb";
+import EventAnnouncementEmail from "@/components/email-templates/event-announcement-email";
+import EventReminderEmail from "@/components/email-templates/event-reminder-email";
+import CustomBroadcastEmail from "@/components/email-templates/custom-broadcast-email";
+import { EmailTemplate } from "@/types/email-builder.types";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL as string;
+
+// ============================================
+// ANNOUNCEMENT EMAIL SYSTEM
+// For notifying all community members about events
+// ============================================
+
+/**
+ * Send event announcement to all registered community members
+ * Fetches recipients from registrations collection
+ * Sets announcementSent = true after successful send
+ */
+export async function sendEventAnnouncement(
+  eventId: string,
+  eventData: {
+    title: string;
+    description: string;
+    date: string;
+    location: string;
+    thumbnail?: string;
+  }
+): Promise<{ success: boolean; message: string; error?: string }> {
+  try {
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
+    const { db } = await connectToDatabase();
+
+    const registrationsCollection = db.collection("registrations");
+    const registrations = await registrationsCollection
+      .find({ status: "registered" })
+      .toArray();
+
+    if (!registrations || registrations.length === 0) {
+      return {
+        success: false,
+        message: "No registered community members found",
+      };
+    }
+
+    // Extract email addresses from registrations
+    const recipientEmails = registrations
+      .map((reg: any) => reg.email)
+      .filter((email: string) => email && typeof email === "string");
+
+    if (recipientEmails.length === 0) {
+      return {
+        success: false,
+        message: "No valid email addresses found in registrations",
+      };
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const registrationLink = `${baseUrl}/events/${eventId}`;
+
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: recipientEmails,
+      subject: `🎉 New Event: ${eventData.title}`,
+      react: EventAnnouncementEmail({
+        eventTitle: eventData.title,
+        eventDescription: eventData.description,
+        eventDate: eventData.date,
+        eventLocation: eventData.location,
+        eventImage: eventData.thumbnail,
+        registrationLink,
+      }),
+    });
+
+    if (response.error) {
+      throw new Error(`Resend API error: ${response.error.message}`);
+    }
+
+    // Update database - set announcementSent = true
+    const eventsCollection = db.collection("events");
+    await eventsCollection.updateOne(
+      { _id: new ObjectId(eventId) },
+      { $set: { announcementSent: true, announcementSentAt: new Date() } }
+    );
+
+    // Log email in database
+    const emailLogsCollection = db.collection("email_logs");
+    await emailLogsCollection.insertOne({
+      eventId: new ObjectId(eventId),
+      emailType: "announcement",
+      trigger: "manual",
+      recipientCount: recipientEmails.length,
+      sentAt: new Date(),
+      subject: `New Event: ${eventData.title}`,
+      resendId: response.data?.id,
+    });
+
+    // Activity log
+    const activitiesCollection = db.collection("activities");
+    await activitiesCollection.insertOne({
+      action: "event_announcement_sent",
+      eventId: new ObjectId(eventId),
+      details: `Event announcement sent to ${recipientEmails.length} community members`,
+      createdAt: new Date(),
+    });
+
+    return {
+      success: true,
+      message: `Announcement sent to ${recipientEmails.length} community members`,
+    };
+  } catch (error) {
+    console.error("[Email] Announcement send failed:", error);
+    return {
+      success: false,
+      message: "Failed to send announcement",
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+// ============================================
+// REMINDER EMAIL SYSTEM
+// For notifying registered event attendees
+// ============================================
+
+type TimeFrame = "1-week" | "3-days" | "tomorrow" | "today";
+
+interface ReminderRecipient {
+  email: string;
+  name: string;
+}
+
+/**
+ * Send event reminder to registered attendees
+ * Manually triggered from admin dashboard
+ * Time-aware messaging based on timeFrame parameter
+ */
+export async function sendEventReminder(
+  eventId: string,
+  recipients: ReminderRecipient[],
+  eventData: {
+    title: string;
+    date: string;
+    location: string;
+  },
+  timeFrame: TimeFrame
+): Promise<{ success: boolean; message: string; error?: string }> {
+  try {
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
+    // Check if reminder for this timeFrame was already sent
+    const { db } = await connectToDatabase();
+    const emailLogsCollection = db.collection("email_logs");
+
+    const existingReminder = await emailLogsCollection.findOne({
+      eventId: new ObjectId(eventId),
+      emailType: "reminder",
+      timeFrame: timeFrame,
+    });
+
+    if (existingReminder) {
+      return {
+        success: false,
+        message: `Reminder for "${timeFrame}" already sent to this event`,
+      };
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const eventLink = `${baseUrl}/events/${eventId}`;
+
+    // Send individual emails to each recipient
+    const emailPromises = recipients.map((recipient) =>
+      resend.emails.send({
+        from: FROM_EMAIL,
+        to: recipient.email,
+        subject: `Reminder: ${eventData.title}`,
+        react: EventReminderEmail({
+          recipientName: recipient.name,
+          eventTitle: eventData.title,
+          eventDate: eventData.date,
+          eventLocation: eventData.location,
+          timeFrame,
+          eventLink,
+        }),
+      })
+    );
+
+    const results = await Promise.all(emailPromises);
+
+    // Check for errors
+    const failedEmails = results.filter((r) => r.error);
+    if (failedEmails.length > 0) {
+      console.error(
+        "[Email] Some reminders failed:",
+        failedEmails.map((f) => f.error?.message)
+      );
+    }
+
+    // Log successful sends
+    const eventsCollection = db.collection("events");
+    const successCount = results.filter((r) => !r.error).length;
+
+    if (successCount > 0) {
+      // Record in email logs
+      await emailLogsCollection.insertOne({
+        eventId: new ObjectId(eventId),
+        emailType: "reminder",
+        timeFrame: timeFrame,
+        trigger: "manual",
+        recipientCount: successCount,
+        sentAt: new Date(),
+        subject: `Reminder: ${eventData.title}`,
+      });
+
+      // Activity log
+      const activitiesCollection = db.collection("activities");
+      await activitiesCollection.insertOne({
+        action: "event_reminder_sent",
+        eventId: new ObjectId(eventId),
+        details: `Event reminder (${timeFrame}) sent to ${successCount} attendees`,
+        createdAt: new Date(),
+      });
+    }
+
+    return {
+      success: true,
+      message: `Reminder sent to ${successCount} attendees${
+        failedEmails.length > 0 ? ` (${failedEmails.length} failed)` : ""
+      }`,
+    };
+  } catch (error) {
+    console.error("[Email] Reminder send failed:", error);
+    return {
+      success: false,
+      message: "Failed to send reminder",
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+export async function sendCustomBroadcast(
+  subject: string,
+  htmlContent: string
+): Promise<{ success: boolean; message: string; error?: string }> {
+  try {
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
+    const { db } = await connectToDatabase();
+    const registrationsCollection = db.collection("registrations");
+
+    const registrations = await registrationsCollection
+      .find({ status: "registered" })
+      .toArray();
+
+    if (!registrations || registrations.length === 0) {
+      return {
+        success: false,
+        message: "No registered community members found",
+      };
+    }
+
+    const recipientEmails = registrations
+      .map((reg: any) => reg.email)
+      .filter((email: string) => email && typeof email === "string");
+
+    if (recipientEmails.length === 0) {
+      return {
+        success: false,
+        message: "No valid email addresses found",
+      };
+    }
+
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: recipientEmails,
+      subject: subject,
+      react: CustomBroadcastEmail({
+        subject,
+        htmlContent,
+      }),
+    });
+
+    if (response.error) {
+      throw new Error(`Resend API error: ${response.error.message}`);
+    }
+
+    // Log email in database
+    const emailLogsCollection = db.collection("email_logs");
+    await emailLogsCollection.insertOne({
+      emailType: "custom-broadcast",
+      trigger: "manual",
+      recipientCount: recipientEmails.length,
+      sentAt: new Date(),
+      subject: subject,
+      resendId: response.data?.id,
+      htmlContentLength: htmlContent.length,
+    });
+
+    // Activity log
+    const activitiesCollection = db.collection("activities");
+    await activitiesCollection.insertOne({
+      action: "custom_broadcast_sent",
+      details: `Custom broadcast sent to ${recipientEmails.length} members`,
+      createdAt: new Date(),
+    });
+
+    return {
+      success: true,
+      message: `Broadcast sent to ${recipientEmails.length} community members`,
+    };
+  } catch (error) {
+    console.error("[Email] Custom broadcast failed:", error);
+    return {
+      success: false,
+      message: "Failed to send broadcast",
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+/**
+ * Get reminder sent status for all timeframes
+ */
+export async function getRemindersSentStatus(eventId: string): Promise<{
+  success: boolean;
+  data?: Record<TimeFrame, boolean>;
+  error?: string;
+}> {
+  try {
+    const { db } = await connectToDatabase();
+    const emailLogsCollection = db.collection("email_logs");
+
+    // Find all reminder logs for this event
+    const reminderLogs = await emailLogsCollection
+      .find({
+        eventId: new ObjectId(eventId),
+        emailType: "reminder",
+      })
+      .toArray();
+
+    // Build status object
+    const status: Record<TimeFrame, boolean> = {
+      "1-week": false,
+      "3-days": false,
+      tomorrow: false,
+      today: false,
+    };
+
+    // Mark timeframes that have been sent
+    reminderLogs.forEach((log: any) => {
+      if (log.timeFrame && log.timeFrame in status) {
+        status[log.timeFrame as TimeFrame] = true;
+      }
+    });
+
+    return {
+      success: true,
+      data: status,
+    };
+  } catch (error) {
+    console.error("[Email] Failed to fetch reminder status:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Get email history
+ */
+export async function getEmailHistory(limit = 50) {
+  try {
+    const { db } = await connectToDatabase();
+    const emailLogsCollection = db.collection("email_logs");
+
+    const logs = await emailLogsCollection
+      .find({})
+      .sort({ sentAt: -1 })
+      .limit(limit)
+      .toArray();
+
+    return {
+      success: true,
+      data: logs,
+    };
+  } catch (error) {
+    console.error("[Email] History fetch failed:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Check if announcement was already sent for event
+ */
+export async function hasAnnouncementBeenSent(
+  eventId: string
+): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase();
+    const eventsCollection = db.collection("events");
+
+    const event = await eventsCollection.findOne({
+      _id: new ObjectId(eventId),
+    });
+
+    return event?.announcementSent === true;
+  } catch (error) {
+    console.error("[Email] Check failed:", error);
+    return false;
+  }
+}
