@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Pencil, Eye, Send } from "lucide-react";
+import { Pencil, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type EditorMode = "edit" | "preview";

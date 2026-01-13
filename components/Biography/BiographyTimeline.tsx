@@ -78,7 +78,7 @@ export function BiographyTimeline() {
         <div className="max-w-4xl mx-auto">
           <div className="relative">
             {/* Timeline vertical line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-primary transform md:-translate-x-1/2" />
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-linear-to-b from-primary via-secondary to-primary transform md:-translate-x-1/2" />
 
             {/* Milestone items */}
             {milestones.map((milestone, index) => (
@@ -116,7 +116,7 @@ export function BiographyTimeline() {
 
                 {/* Timeline dot indicator */}
                 <motion.div
-                  className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-primary to-secondary"
+                  className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full bg-linear-to-br from-primary to-secondary"
                   whileInView={{ scale: [0, 1.2, 1] }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.15 }}

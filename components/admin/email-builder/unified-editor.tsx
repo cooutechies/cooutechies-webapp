@@ -56,10 +56,6 @@ export function UnifiedEditor({
           levels: [1, 2, 3],
         },
         blockquote: false,
-        history: {
-          depth: 100,
-          newGroupDelay: 500,
-        },
       }),
       Blockquote.configure({
         HTMLAttributes: {
@@ -159,7 +155,7 @@ export function UnifiedEditor({
       </div>
 
       {/* Editor Content */}
-      <div className="glass rounded-2xl border-glow p-6 md:p-8 min-h-[500px]">
+      <div className="glass rounded-2xl border-glow p-6 md:p-8 min-h-125">
         <EditorContent editor={editor} />
       </div>
 

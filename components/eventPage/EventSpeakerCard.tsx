@@ -13,7 +13,7 @@ interface SpeakerCardProps {
     photo?: string;
     name: string;
     role: string;
-    bio: string;
+    bio?: string | undefined;
   };
 }
 

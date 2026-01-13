@@ -6,7 +6,7 @@ import {
   Bold,
   Italic,
   Link,
-  Image,
+  Image as ImageIcon,
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -211,7 +211,7 @@ export function EditorToolbar({
         <Link className="h-4 w-4" />
       </ToolbarButton>
       <ToolbarButton onClick={onInsertImage} tooltip="Insert image">
-        <Image className="h-4 w-4" />
+        <ImageIcon className="h-4 w-4" />
       </ToolbarButton>
       <ToolbarButton onClick={onInsertButton} tooltip="Insert button">
         <SquareCode className="h-4 w-4" />

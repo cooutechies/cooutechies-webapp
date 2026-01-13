@@ -102,7 +102,7 @@ function FounderSection() {
           <div className="glass rounded-3xl overflow-hidden border-glow">
             <div className="grid md:grid-cols-2">
               {/* Founder Image */}
-              <div className="relative h-80 md:h-auto min-h-[400px]">
+              <div className="relative h-80 md:h-auto min-h-100">
                 <Image
                   src="/founder.jpg"
                   alt="Paul Alfred - Founder"
@@ -110,7 +110,7 @@ function FounderSection() {
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent md:bg-gradient-to-r" />
+                <div className="absolute inset-0 bg-linear-to-t from-background/90 via-background/20 to-transparent md:bg-linear-to-r" />
 
                 {/* Decorative circles */}
                 <motion.div
@@ -190,7 +190,7 @@ function CoreTeamCards() {
   return (
     <section className="py-20 relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-20" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
@@ -248,7 +248,7 @@ function CoreTeamCards() {
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
 
                   {/* Social Links Overlay */}
                   <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-background/40 backdrop-blur-sm">

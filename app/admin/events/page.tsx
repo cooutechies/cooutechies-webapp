@@ -1,8 +1,6 @@
-/**
- * Events Management Page
- * List all events with CRUD operations
- * Displays registration counts and announcement status
- */
+//   Events Management Page
+//   List all events with CRUD operations
+//  Displays registration counts and announcement status
 
 import { getEvents } from "@/app/actions/events";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,8 +16,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Event } from "@/types/data.types";
 import { formatDuration } from "@/lib/eventDurationUtils";
+import { Event } from "@/types/event.types";
 
 interface EventWithCount extends Event {
   registrationCount?: number;
@@ -34,11 +32,11 @@ export default async function EventsPage() {
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-100 h-100 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header */}
-      <div className="px-6 py-6 border-b border-border/50 sticky top-0 glass backdrop-blur-xl z-10 relative">
+      <div className="px-6 py-6 border-b border-border/50 sticky top-0 glass backdrop-blur-xl z-10 ">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -115,7 +113,7 @@ export default async function EventsPage() {
 
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4 text-primary/60 flex-shrink-0" />
+                          <Calendar className="h-4 w-4 text-primary/60 shrink-0" />
                           <span>
                             {new Date(event.date).toLocaleDateString("en-US", {
                               month: "short",
@@ -126,18 +124,18 @@ export default async function EventsPage() {
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4 text-primary/60 flex-shrink-0" />
+                          <Clock className="h-4 w-4 text-primary/60 shrink-0" />
                           <span>
                             {formatDuration(event.duration || "1 day")}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <MapPin className="h-4 w-4 text-primary/60 flex-shrink-0" />
+                          <MapPin className="h-4 w-4 text-primary/60 shrink-0" />
                           <span className="truncate">{event.location}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Users className="h-4 w-4 text-secondary/60 flex-shrink-0" />
+                          <Users className="h-4 w-4 text-secondary/60 shrink-0" />
                           <span>
                             {event.registrationCount || 0} registrations
                           </span>

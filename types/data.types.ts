@@ -5,43 +5,19 @@
 
 import type { ObjectId } from "mongodb";
 
-/**
- * Event Document
- * Represents an event in the database with all related metadata
- */
-export interface Event {
-  _id: ObjectId;
-  title: string;
-  description: string;
-  date: Date;
-  location: string;
-  coverImage: string;
-  maxAttendees?: number;
-  duration: string;
-  speakers?: Speaker[];
-  createdAt: Date;
-  updatedAt: Date;
-  announcementSent: boolean;
-  announcementSentAt?: Date;
-}
-
-export interface Speaker {
-  name: string;
-  role: string;
-  photo?: string;
-}
-
-/**
- * Registration Document
- * Tracks user registrations for events
- */
 export interface Registration {
   _id: ObjectId;
-  eventId: ObjectId;
   firstName: string;
   lastName: string;
   email: string;
-  registeredAt: Date;
+  department: string;
+  level: string;
+  campus: string;
+  techSkills?: string;
+  aspiringSkills?: string;
+  reason: string;
+  status: string;
+  createdAt: Date | string;
 }
 
 /**

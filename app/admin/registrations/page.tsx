@@ -39,14 +39,14 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
     <div className="flex flex-col h-full relative overflow-hidden">
       {/* Background effects matching overview page */}
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-100 h-100 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header with glassmorphic effect */}
-      <div className="relative z-10 px-6 py-6 border-b border-border/50 sticky top-0 glass backdrop-blur-xl">
+      <div className=" z-10 px-6 py-6 border-b border-border/50 sticky top-0 glass backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20">
+            <div className="p-2 rounded-xl bg-linear-to-br from-primary/20 to-secondary/20">
               <Users className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -82,17 +82,17 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
             <>
               {/* Registrations List */}
               <div className="space-y-4">
-                {registrations.map((registration: any, index: number) => (
+                {registrations.map((registration, index) => (
                   <div
                     key={registration._id.toString()}
                     className="glass rounded-xl overflow-hidden border-glow hover:shadow-xl transition-all duration-300"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {/* Main Info Bar */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 border-b border-border/30">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-linear-to-r from-primary/5 via-transparent to-secondary/5 border-b border-border/30">
                       <div className="flex items-center gap-4 flex-1">
                         {/* Avatar Circle */}
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center flex-shrink-0 border-2 border-primary/20">
+                        <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary/30 to-secondary/30 flex items-center justify-center shrink-0 border-2 border-primary/20">
                           <span className="text-lg font-display font-bold text-gradient">
                             {registration.firstName[0]}
                             {registration.lastName[0]}
@@ -105,7 +105,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
                             {registration.firstName} {registration.lastName}
                           </h3>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Mail className="h-3.5 w-3.5 flex-shrink-0" />
+                            <Mail className="h-3.5 w-3.5 shrink-0" />
                             <span className="truncate">
                               {registration.email}
                             </span>
@@ -114,7 +114,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
                       </div>
 
                       {/* Status and Date */}
-                      <div className="flex items-center gap-4 flex-shrink-0">
+                      <div className="flex items-center gap-4 shrink-0">
                         <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
                           <Calendar className="h-3.5 w-3.5" />
                           {new Date(registration.createdAt).toLocaleDateString(
@@ -138,7 +138,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-5">
                         {/* Department */}
                         <div className="flex items-start gap-3">
-                          <div className="p-2 rounded-lg bg-blue-500/10 flex-shrink-0 mt-0.5">
+                          <div className="p-2 rounded-lg bg-blue-500/10 shrink-0 mt-0.5">
                             <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -153,7 +153,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
 
                         {/* Level */}
                         <div className="flex items-start gap-3">
-                          <div className="p-2 rounded-lg bg-cyan-500/10 flex-shrink-0 mt-0.5">
+                          <div className="p-2 rounded-lg bg-cyan-500/10 shrink-0 mt-0.5">
                             <GraduationCap className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -168,7 +168,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
 
                         {/* Campus */}
                         <div className="flex items-start gap-3">
-                          <div className="p-2 rounded-lg bg-purple-500/10 flex-shrink-0 mt-0.5">
+                          <div className="p-2 rounded-lg bg-purple-500/10 shrink-0 mt-0.5">
                             <MapPin className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -183,7 +183,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
 
                         {/* Tech Skills */}
                         <div className="flex items-start gap-3 md:col-span-3">
-                          <div className="p-2 rounded-lg bg-green-500/10 flex-shrink-0 mt-0.5">
+                          <div className="p-2 rounded-lg bg-green-500/10 shrink-0 mt-0.5">
                             <Code className="h-4 w-4 text-green-600 dark:text-green-400" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -198,7 +198,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
 
                         {/* Aspiring Skills */}
                         <div className="flex items-start gap-3 md:col-span-3">
-                          <div className="p-2 rounded-lg bg-orange-500/10 flex-shrink-0 mt-0.5">
+                          <div className="p-2 rounded-lg bg-orange-500/10 shrink-0 mt-0.5">
                             <Target className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -213,7 +213,7 @@ export default async function RegistrationsPage({ searchParams }: PageProps) {
 
                         {/* Reason - Full Width */}
                         <div className="flex items-start gap-3 md:col-span-3 p-4 rounded-lg bg-muted/30 border border-border/30">
-                          <div className="p-2 rounded-lg bg-primary/10 flex-shrink-0 mt-0.5">
+                          <div className="p-2 rounded-lg bg-primary/10 shrink-0 mt-0.5">
                             <MessageSquare className="h-4 w-4 text-primary" />
                           </div>
                           <div className="flex-1 min-w-0">

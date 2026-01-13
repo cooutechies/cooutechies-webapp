@@ -15,6 +15,7 @@ import { RegistrationForm } from "@/components/eventPage/RegistrationForm";
 import { EventStatusBadge } from "@/components/eventPage/EventStatusBadge";
 import { getEventById } from "@/app/actions/events";
 import { isRegistrationOpen, formatDuration } from "@/lib/eventDurationUtils";
+import { Speaker } from "@/types/event.types";
 
 /**
  * Event Detail Page (Server Component)
@@ -74,7 +75,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
       <section className="relative pt-28 pb-0 overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 grid-pattern opacity-30" />
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-0 left-0 w-150 h-150 bg-primary/10 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2" />
 
         <div className="container mx-auto px-4 relative z-10">
           {/* Back button */}
@@ -92,7 +93,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
           <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
             {/* Left Column - Cover Image */}
             <div className="lg:col-span-3">
-              <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden border-glow">
+              <div className="relative h-100 md:h-125 rounded-3xl overflow-hidden border-glow">
                 <Image
                   src={event.coverImage || "/placeholder.svg"}
                   alt={event.title}
@@ -100,7 +101,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
               </div>
             </div>
 
@@ -123,7 +124,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
               <div className="glass rounded-2xl p-6 space-y-4">
                 {/* Date & Time */}
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                     <Calendar className="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -137,7 +138,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
                 {/* Duration */}
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                     <Clock className="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -150,7 +151,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
                 {/* Location */}
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                     <MapPin className="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -161,7 +162,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
                 {/* Attendees */}
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                     <Users className="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -210,7 +211,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
                     Featured Speakers
                   </h2>
                   <div className="space-y-4">
-                    {event.speakers.map((speaker: any, index: number) => (
+                    {event.speakers.map((speaker: Speaker, index: number) => (
                       <EventSpeakerCard key={index} speaker={speaker} />
                     ))}
                   </div>
@@ -241,7 +242,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
       {/* Related Events CTA */}
       <section className="py-16 relative overflow-hidden">
         <div className="absolute inset-0 circuit-pattern opacity-20" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-0 w-125 h-125 bg-secondary/10 rounded-full blur-[120px]" />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="glass rounded-3xl p-12 text-center max-w-2xl mx-auto border-glow">

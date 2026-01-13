@@ -43,8 +43,8 @@ export function BiographyHeroAbout() {
       <section className="relative pt-28 pb-16 md:pt-32 md:pb-24 overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 grid-pattern opacity-30" />
-        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -translate-x-1/2" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] translate-x-1/2" />
+        <div className="absolute top-1/4 left-0 w-125 h-125 bg-primary/10 rounded-full blur-[120px] -translate-x-1/2" />
+        <div className="absolute bottom-0 right-0 w-100 h-100 bg-secondary/10 rounded-full blur-[100px] translate-x-1/2" />
 
         <div className="container mx-auto px-4 relative z-10">
           {/* Back button */}
@@ -171,7 +171,7 @@ export function BiographyHeroAbout() {
                   whileHover={{ y: -5, scale: 1.02 }}
                   className="glass p-6 rounded-2xl text-center group cursor-pointer"
                 >
-                  <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-linear-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <stat.icon className="w-7 h-7 text-primary" />
                   </div>
                   <div className="text-3xl md:text-4xl font-display font-bold text-gradient mb-1">

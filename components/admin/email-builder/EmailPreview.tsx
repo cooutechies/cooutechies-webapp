@@ -327,7 +327,7 @@ export function EmailPreview({ subject, htmlContent }: EmailPreviewProps) {
       {/* Subject Line */}
       <div className="mb-4 p-4 glass rounded-xl">
         <p className="text-xs text-muted-foreground mb-1">Subject:</p>
-        <p className="text-sm font-semibold text-foreground break-words">
+        <p className="text-sm font-semibold text-foreground wrap-break-word">
           {subject || "(No subject)"}
         </p>
       </div>
@@ -341,7 +341,7 @@ export function EmailPreview({ subject, htmlContent }: EmailPreviewProps) {
           transition={{ duration: 0.2 }}
           className={cn(
             "mx-auto transition-all duration-300",
-            device === "mobile" ? "max-w-[375px]" : "max-w-[680px]"
+            device === "mobile" ? "max-w-93.75" : "max-w-170"
           )}
         >
           <div
@@ -363,7 +363,7 @@ export function EmailPreview({ subject, htmlContent }: EmailPreviewProps) {
               srcDoc={fullHtml}
               className={cn(
                 "w-full border-0 bg-transparent",
-                device === "mobile" ? "h-[600px] rounded-b-[32px]" : "h-[700px]"
+                device === "mobile" ? "h-150 rounded-b-4xl" : "h-175"
               )}
               title="Email Preview"
               sandbox="allow-same-origin"

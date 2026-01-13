@@ -225,7 +225,7 @@ export default function CustomBroadcastEmail({
                     cooutechies@gmail.com
                   </Link>
                   <Text style={copyrightText}>
-                    © {currentYear} COOU Techies. Empowering the tech community.
+                    © {currentYear} COOU Techies. Building the Future Techies.
                   </Text>
                 </Section>
               )}

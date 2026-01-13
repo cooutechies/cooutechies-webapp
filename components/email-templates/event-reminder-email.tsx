@@ -89,14 +89,14 @@ export default function EventReminderEmail({
       <Body style={main}>
         <Container style={outerContainer}>
           <Container style={container}>
-            {/* Header */}
+            {/* Header with Square Logo */}
             <Section style={headerSection}>
               <Img
                 src={logoUrl}
                 alt="COOU Techies"
-                width="600"
-                height="200"
-                style={{ ...logoStyle, margin: "0 auto 24px auto" }}
+                width="150"
+                height="150"
+                style={logoStyle}
               />
               <Section style={gradientLine} />
             </Section>
@@ -122,19 +122,19 @@ export default function EventReminderEmail({
                 {/* Date */}
                 <Section style={eventDetailRow}>
                   <Text style={eventDetailIcon}>📅</Text>
-                  <div>
+                  <Section>
                     <Text style={eventDetailLabel}>Date & Time</Text>
                     <Text style={eventDetailValue}>{eventDate}</Text>
-                  </div>
+                  </Section>
                 </Section>
 
                 {/* Location */}
                 <Section style={eventDetailRow}>
                   <Text style={eventDetailIcon}>📍</Text>
-                  <div>
+                  <Section>
                     <Text style={eventDetailLabel}>Location</Text>
                     <Text style={eventDetailValue}>{eventLocation}</Text>
-                  </div>
+                  </Section>
                 </Section>
               </Section>
             </Section>
@@ -162,14 +162,12 @@ export default function EventReminderEmail({
             {/* Footer */}
             <Section style={footerSection}>
               <Hr style={footerDivider} />
-              <Text style={footerText}>
-                Can&apos;t make it? Let us know so we can invite others.
-              </Text>
+              <Text style={footerText}>Can&apos;t wait to see u there!!.</Text>
               <Link href="mailto:cooutechies@gmail.com" style={footerLink}>
-                Reply to this email
+                have questions? contact us
               </Link>
               <Text style={copyrightText}>
-                © {currentYear} COOU Techies. Building amazing experiences.
+                © {currentYear} COOU Techies. Building the Future Techies.
               </Text>
             </Section>
           </Container>
@@ -192,7 +190,6 @@ const main = {
 };
 
 const outerContainer = {
-  maxWidth: "600px",
   margin: "0 auto",
   padding: "4px",
   borderRadius: "24px",
@@ -216,6 +213,8 @@ const headerSection = {
 };
 
 const logoStyle = {
+  display: "block",
+  margin: "0 auto 24px auto",
   borderRadius: "16px",
   boxShadow: "0 0 40px rgba(34, 197, 94, 0.3), 0 4px 20px rgba(0, 0, 0, 0.4)",
   border: "2px solid rgba(34, 197, 94, 0.3)",
@@ -236,17 +235,18 @@ const reminderSection = {
 };
 
 const reminderBadge = {
-  display: "inline-block",
-  fontSize: "28px",
+  fontSize: "40px",
   fontWeight: "800",
   color: "#22c55e",
-  margin: "0 0 12px 0",
+  margin: "0 0 16px 0",
+  lineHeight: "1.2",
 };
 
 const reminderSubtext = {
-  fontSize: "16px",
+  fontSize: "18px",
   color: "#94a3b8",
   margin: "0",
+  lineHeight: "1.6",
 };
 
 const greetingSection = {
@@ -254,10 +254,11 @@ const greetingSection = {
 };
 
 const greetingText = {
-  fontSize: "20px",
+  fontSize: "24px",
   fontWeight: "700",
   color: "#f8fafc",
   margin: "0",
+  lineHeight: "1.4",
 };
 
 const nameHighlight = {
@@ -278,38 +279,39 @@ const eventCard = {
 
 const eventCardTitle = {
   fontFamily: '"Orbitron", "Inter", sans-serif',
-  fontSize: "24px",
+  fontSize: "32px",
   fontWeight: "800",
   color: "#f8fafc",
   margin: "0 0 24px 0",
+  lineHeight: "1.3",
 };
 
 const eventDetailRow = {
-  display: "flex" as const,
-  marginBottom: "16px",
-  alignItems: "flex-start" as const,
+  marginBottom: "20px",
 };
 
 const eventDetailIcon = {
-  fontSize: "20px",
+  fontSize: "28px",
   marginRight: "12px",
-  marginTop: "2px",
+  marginBottom: "8px",
+  display: "inline-block",
 };
 
 const eventDetailLabel = {
-  fontSize: "12px",
+  fontSize: "14px",
   fontWeight: "600",
   letterSpacing: "1px",
   color: "#94a3b8",
-  margin: "0 0 4px 0",
+  margin: "0 0 6px 0",
   textTransform: "uppercase" as const,
 };
 
 const eventDetailValue = {
-  fontSize: "15px",
+  fontSize: "18px",
   fontWeight: "600",
   color: "#22c55e",
   margin: "0",
+  lineHeight: "1.5",
 };
 
 const ctaSection = {
@@ -320,20 +322,21 @@ const ctaSection = {
 const ctaButton = {
   background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
   color: "#ffffff",
-  padding: "16px 40px",
+  padding: "18px 48px",
   borderRadius: "12px",
   textDecoration: "none",
   fontWeight: "800",
-  fontSize: "16px",
+  fontSize: "18px",
   fontFamily: '"Orbitron", "Inter", sans-serif',
   display: "inline-block",
   boxShadow: "0 8px 24px rgba(34, 197, 94, 0.35)",
 };
 
 const ctaSubtext = {
-  fontSize: "14px",
+  fontSize: "16px",
   color: "#94a3b8",
   margin: "16px 0 0 0",
+  lineHeight: "1.5",
 };
 
 const tipsSection = {
@@ -346,16 +349,17 @@ const tipsSection = {
 
 const tipsTitle = {
   fontFamily: '"Orbitron", "Inter", sans-serif',
-  fontSize: "14px",
+  fontSize: "18px",
   fontWeight: "800",
   color: "#eab308",
-  margin: "0 0 12px 0",
+  margin: "0 0 16px 0",
 };
 
 const tipItem = {
-  fontSize: "14px",
+  fontSize: "16px",
   color: "#e2e8f0",
-  margin: "8px 0",
+  margin: "10px 0",
+  lineHeight: "1.6",
 };
 
 const footerSection = {
@@ -371,19 +375,21 @@ const footerDivider = {
 
 const footerText = {
   color: "#94a3b8",
-  fontSize: "14px",
+  fontSize: "16px",
   margin: "0 0 12px 0",
+  lineHeight: "1.5",
 };
 
 const footerLink = {
   color: "#22c55e",
   textDecoration: "none",
   fontWeight: "600",
-  fontSize: "14px",
+  fontSize: "16px",
 };
 
 const copyrightText = {
   color: "#64748b",
-  fontSize: "12px",
+  fontSize: "14px",
   margin: "20px 0 0 0",
+  lineHeight: "1.5",
 };

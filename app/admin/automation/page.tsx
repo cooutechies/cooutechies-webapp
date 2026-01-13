@@ -51,13 +51,13 @@ export default function AutomationPage() {
           <Card className="border border-blue-500/20 bg-blue-500/5">
             <CardContent className="pt-6">
               <div className="flex gap-3">
-                <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-semibold text-blue-900 dark:text-blue-100">
                     Vercel Cron Jobs Active
                   </p>
                   <p className="text-sm text-blue-800 dark:text-blue-200 mt-1">
-                    All automations are managed by Vercel's serverless cron
+                    All automations are managed by Vercel&apos;s serverless cron
                     system. They run reliably at the scheduled times without
                     requiring any manual intervention.
                   </p>
@@ -83,7 +83,7 @@ export default function AutomationPage() {
                         {automation.description}
                       </p>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
                       <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
                       <span className="text-sm font-medium text-green-600 dark:text-green-400">
                         Active
@@ -127,9 +127,9 @@ export default function AutomationPage() {
             <CardContent className="space-y-3 text-sm text-muted-foreground">
               <p>
                 <strong className="text-foreground">Vercel Cron:</strong> Our
-                automations run on Vercel's serverless infrastructure,
+                automations run on Vercel&apos;s serverless infrastructure,
                 automatically executing at scheduled intervals without consuming
-                your application's resources.
+                your application&apos;s resources.
               </p>
               <p>
                 <strong className="text-foreground">Database Checks:</strong>{" "}

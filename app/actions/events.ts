@@ -6,14 +6,18 @@
 
 "use server";
 
+import type { Event } from "@/types/event.types";
+import type { EventFormData } from "@/lib/validations";
+import type { ApiResponse } from "@/types/data.types";
 import { connectToDatabase } from "@/lib/db";
-import { type EventFormData } from "@/lib/validations";
-import { ApiResponse } from "@/types/data.types";
+import { uploadMultipleFilesToS3 } from "@/lib/uploadFileToS3";
 import { ObjectId } from "mongodb";
 
 /**
- * Create a new event
- * Images are already uploaded to S3 from the client
+ * Create a new event with uploaded images
+ * Images are converted from base64 to S3 URLs before storage
+ * @param formData - Event form data with images and event details
+ * @returns API response with created event ID
  */
 export async function createEvent(
   formData: EventFormData
@@ -24,15 +28,20 @@ export async function createEvent(
     const eventsCollection = db.collection<Event>("events");
 
     // Create event document (images already uploaded, just save URLs)
-    const event: Omit<Event, "_id"> = {
+    const event: Event = {
+      _id: new ObjectId(),
       title: formData.title,
       description: formData.description,
       date: new Date(formData.date),
       location: formData.location,
       coverImage: formData.coverImage,
-      maxAttendees: formData.maxAttendees,
       duration: formData.duration,
-      speakers: formData.speakers || [],
+      speakers: (formData.speakers || []).map((speaker) => ({
+        name: speaker.name,
+        role: speaker.role,
+        photo: speaker.photo ?? undefined,
+      })),
+      maxAttendees: formData.maxAttendees ?? undefined,
       createdAt: new Date(),
       updatedAt: new Date(),
       announcementSent: false,
@@ -66,7 +75,10 @@ export async function createEvent(
 }
 
 /**
- * Get all events with pagination
+ * Get all events with pagination and registration counts
+ * @param page - Page number for pagination (default: 1)
+ * @param limit - Results per page (default: 10)
+ * @returns Events list with metadata and registration counts
  */
 export async function getEvents(page = 1, limit = 10) {
   try {
@@ -120,7 +132,9 @@ export async function getEvents(page = 1, limit = 10) {
 }
 
 /**
- * Get event details by ID
+ * Get event details by ID with registrations and reminders
+ * @param eventId - MongoDB ObjectId as string
+ * @returns Event with related registration and reminder data
  */
 export async function getEventById(eventId: string) {
   try {
@@ -175,8 +189,11 @@ export async function getEventById(eventId: string) {
 }
 
 /**
- * Update event with optional S3 image uploads
+ * Update event with optional image uploads
  * Only uploads new images (base64 strings), preserves existing S3 URLs
+ * @param eventId - MongoDB ObjectId as string
+ * @param formData - Partial form data for updates
+ * @returns API response with update status
  */
 export async function updateEvent(
   eventId: string,
@@ -235,7 +252,6 @@ export async function updateEvent(
       }
     }
 
-    // Replace base64 images with S3 URLs
     if (formData.coverImage?.startsWith("data:") && uploadedUrls.length > 0) {
       coverImageUrl = uploadedUrls[0];
     }
@@ -255,21 +271,29 @@ export async function updateEvent(
       return speaker;
     });
 
-    // Prepare update data
-    const updateData = {
-      ...formData,
-      coverImage: coverImageUrl,
-      speakers: updatedSpeakers,
-      date: formData.date ? new Date(formData.date) : undefined,
-      updatedAt: new Date(),
-    };
+    const updateData: Partial<Event> = {};
 
-    // Remove undefined values
-    Object.keys(updateData).forEach(
-      (key) =>
-        updateData[key as keyof typeof updateData] === undefined &&
-        delete updateData[key as keyof typeof updateData]
-    );
+    if (formData.title !== undefined) updateData.title = formData.title;
+    if (formData.description !== undefined)
+      updateData.description = formData.description;
+    if (formData.location !== undefined)
+      updateData.location = formData.location;
+    if (coverImageUrl !== undefined) updateData.coverImage = coverImageUrl;
+    if (formData.duration !== undefined)
+      updateData.duration = formData.duration;
+    if (updatedSpeakers !== undefined) {
+      updateData.speakers = updatedSpeakers.map((speaker) => ({
+        name: speaker.name,
+        role: speaker.role,
+        photo: speaker.photo ?? undefined,
+      }));
+    }
+    if (formData.maxAttendees !== undefined) {
+      updateData.maxAttendees = formData.maxAttendees ?? undefined;
+    }
+    if (formData.date !== undefined) updateData.date = new Date(formData.date);
+
+    updateData.updatedAt = new Date();
 
     // Update event in database
     const { db } = await connectToDatabase();
@@ -302,7 +326,9 @@ export async function updateEvent(
 }
 
 /**
- * Delete event and all related data
+ * Delete event and all related data (registrations, reminders, logs)
+ * @param eventId - MongoDB ObjectId as string
+ * @returns API response with deletion status
  */
 export async function deleteEvent(eventId: string): Promise<ApiResponse> {
   try {
@@ -315,7 +341,7 @@ export async function deleteEvent(eventId: string): Promise<ApiResponse> {
     }
 
     const { db } = await connectToDatabase();
-    const eventsCollection = db.collection("events");
+    const eventsCollection = db.collection<Event>("events");
 
     // Delete event from database
     const result = await eventsCollection.deleteOne({

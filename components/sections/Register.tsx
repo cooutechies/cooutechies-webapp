@@ -150,7 +150,6 @@ export default function Register() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const isFormInView = useInView(formRef, { once: true, margin: "-100px" });
-  const shouldReduceMotion = useReducedMotion();
 
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),

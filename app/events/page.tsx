@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { EventCard } from "@/components/eventPage/EventCard";
 import { getEvents } from "@/app/actions/events";
 import { calculateEventEndTime } from "@/lib/eventDurationUtils";
+import { ObjectId } from "mongodb";
 
 /**
  * Events Listing Page (Server Component)
@@ -19,10 +20,23 @@ import { calculateEventEndTime } from "@/lib/eventDurationUtils";
  * Upcoming: now <= event.date + duration
  * Past: now > event.date + duration
  */
-function separateEvents(events: any[]) {
+
+interface EventWithCount {
+  _id: ObjectId;
+  title: string;
+  description: string;
+  date: Date;
+  location: string;
+  coverImage: string;
+  duration: string;
+  maxAttendees?: number;
+  registrationCount?: number;
+}
+
+function separateEvents(events: EventWithCount[]) {
   const now = new Date();
-  const upcoming: any[] = [];
-  const past: any[] = [];
+  const upcoming: EventWithCount[] = [];
+  const past: EventWithCount[] = [];
 
   events.forEach((event) => {
     const eventDate = new Date(event.date);
@@ -83,7 +97,7 @@ export default async function EventsPage() {
         {/* Background effects */}
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <div className="absolute top-1/4 left-0 w-125 h-125 bg-primary/10 rounded-full blur-[120px] -translate-x-1/2" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] translate-x-1/2" />
+        <div className="absolute bottom-0 right-0 w-100 h-100 bg-secondary/10 rounded-full blur-[100px] translate-x-1/2" />
 
         <div className="container mx-auto px-4 relative z-10">
           {/* Back button */}
@@ -150,12 +164,13 @@ export default async function EventsPage() {
                     _id: event._id.toString(),
                     title: event.title,
                     description: event.description,
-                    date: event.date.toISOString
-                      ? event.date.toISOString()
-                      : event.date,
+                    date:
+                      event.date instanceof Date
+                        ? event.date.toISOString()
+                        : event.date,
                     location: event.location,
                     coverImage: event.coverImage,
-                    maxAttendees: event.maxAttendees,
+                    maxAttendees: event.maxAttendees ?? null,
                     duration: event.duration || "1 day",
                   }}
                   registeredCount={event.registrationCount || 0}
@@ -204,12 +219,13 @@ export default async function EventsPage() {
                     _id: event._id.toString(),
                     title: event.title,
                     description: event.description,
-                    date: event.date.toISOString
-                      ? event.date.toISOString()
-                      : event.date,
+                    date:
+                      event.date instanceof Date
+                        ? event.date.toISOString()
+                        : event.date,
                     location: event.location,
                     coverImage: event.coverImage,
-                    maxAttendees: event.maxAttendees,
+                    maxAttendees: event.maxAttendees ?? null,
                     duration: event.duration || "1 day",
                   }}
                   isPast={true}
@@ -230,8 +246,8 @@ export default async function EventsPage() {
               <span className="text-gradient">Stay Updated</span>
             </h2>
             <p className="text-muted-foreground mb-8">
-              Don't miss out on our upcoming events! Follow us on social media
-              or join our community to get notified about new events.
+              Don&apos;t miss out on our upcoming events! Follow us on social
+              media or join our community to get notified about new events.
             </p>
             <Button size="lg" asChild>
               <Link href="/join">Join Our Community</Link>

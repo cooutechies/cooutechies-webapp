@@ -36,7 +36,6 @@ export const registrationSchema = z.object({
   campus: z.string().min(1, "Please select your campus"),
 });
 
-
 // Event validation schema
 export const eventSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(200),
@@ -44,6 +43,7 @@ export const eventSchema = z.object({
   date: z.string().datetime("Invalid date format"),
   location: z.string().min(3, "Location is required"),
   coverImage: z.string().url("Valid image URL required"),
+  duration: z.string().min(1, "Duration is required"),
   maxAttendees: z.number().int().positive().optional().nullable(),
   speakers: z
     .array(

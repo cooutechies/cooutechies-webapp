@@ -25,7 +25,6 @@ import {
   Moon,
   Sun,
   ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -64,7 +63,12 @@ export function AdminSidebar() {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      if (!mobile) setIsOpen(true);
+      if (!mobile) {
+        setIsOpen(true);
+      } else {
+        // Reset collapse state when switching to mobile
+        setIsCollapsed(false);
+      }
     };
 
     handleResize();
@@ -74,7 +78,13 @@ export function AdminSidebar() {
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
-    if (isMobile) setIsOpen(false);
+    const timer = setTimeout(() => {
+      if (isMobile) {
+        setIsOpen(false);
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [pathname, isMobile]);
 
   const toggleTheme = () => {
@@ -85,11 +95,11 @@ export function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile menu toggle */}
+      {/* Mobile menu toggle - positioned to not overlap header */}
       <Button
         variant="ghost"
         size="icon"
-        className="md:hidden fixed top-4 left-4 z-50 glass backdrop-blur-xl border border-border/50"
+        className="md:hidden fixed top-4 right-4 z-50 glass backdrop-blur-xl border border-border/50"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -112,7 +122,7 @@ export function AdminSidebar() {
       {/* Sidebar */}
       <motion.aside
         animate={{
-          width: isCollapsed ? "80px" : "256px",
+          width: !isMobile && isCollapsed ? "80px" : "256px",
         }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
@@ -135,26 +145,28 @@ export function AdminSidebar() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
-                className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                className="text-xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
               >
                 Techies Admin
               </motion.h1>
             )}
           </AnimatePresence>
 
-          {/* Desktop Collapse Toggle */}
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden md:flex p-2 rounded-lg hover:bg-muted/50 transition-all duration-300 group relative"
-            aria-label="Toggle sidebar"
-          >
-            <motion.div
-              animate={{ rotate: isCollapsed ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
+          {/* Desktop Collapse Toggle - only show on desktop */}
+          {!isMobile && (
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-2 rounded-lg hover:bg-muted/50 transition-all duration-300 group relative"
+              aria-label="Toggle sidebar"
             >
-              <ChevronLeft className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-            </motion.div>
-          </button>
+              <motion.div
+                animate={{ rotate: isCollapsed ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ChevronLeft className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              </motion.div>
+            </button>
+          )}
         </div>
 
         {/* Navigation Links */}
@@ -172,7 +184,7 @@ export function AdminSidebar() {
                   className={cn(
                     "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden",
                     isActive
-                      ? "bg-gradient-to-r from-primary/20 to-secondary/20 text-primary shadow-lg shadow-primary/20"
+                      ? "bg-linear-to-r from-primary/20 to-secondary/20 text-primary shadow-lg shadow-primary/20"
                       : "text-foreground hover:bg-muted/50"
                   )}
                 >
@@ -180,7 +192,7 @@ export function AdminSidebar() {
                   {isActive && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl"
+                      className="absolute inset-0 bg-linear-to-r from-primary/10 to-secondary/10 rounded-xl"
                       transition={{
                         type: "spring",
                         bounce: 0.2,
@@ -222,9 +234,9 @@ export function AdminSidebar() {
                   {/* Glow effect on hover */}
                   <div
                     className={cn(
-                      "absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-0 blur-xl",
+                      "absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 blur-xl",
                       isActive
-                        ? "bg-gradient-to-r from-primary/30 to-secondary/30"
+                        ? "bg-linear-to-r from-primary/30 to-secondary/30"
                         : "bg-muted/30"
                     )}
                   />
@@ -247,7 +259,7 @@ export function AdminSidebar() {
           >
             {/* Animated background glow */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              className="absolute inset-0 bg-linear-to-r from-primary/20 to-secondary/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               animate={{
                 background: [
                   "linear-gradient(to right, rgba(var(--primary), 0.2), rgba(var(--secondary), 0.2))",
@@ -327,13 +339,13 @@ export function AdminSidebar() {
               whileTap={{ scale: 2, opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-xl" />
+              <div className="absolute inset-0 bg-linear-to-r from-primary/30 to-secondary/30 rounded-xl" />
             </motion.div>
           </motion.button>
         </div>
 
         {/* Gradient accent line */}
-        <div className="h-1 bg-gradient-to-r from-primary via-secondary to-primary opacity-50" />
+        <div className="h-1 bg-linear-to-r from-primary via-secondary to-primary opacity-50" />
       </motion.aside>
     </>
   );

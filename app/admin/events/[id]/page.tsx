@@ -43,9 +43,11 @@ export default async function EventDetailPage({
   const { event, registrations, registrationCount } = result.data;
 
   const communityResult = await getCommunityRegistrations(1, 0);
+
   const allCommunityEmails =
-    communityResult.success &&
-    communityResult.data.registrations.map((reg: any) => reg.email);
+    (communityResult.success &&
+      communityResult.data?.registrations.map((reg) => reg.email)) ||
+    [];
 
   const reminderStatusResult = await getRemindersSentStatus(id);
   const sentReminders = reminderStatusResult.success
@@ -64,11 +66,11 @@ export default async function EventDetailPage({
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-100 h-100 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header */}
-      <div className="px-6 py-6 border-b border-border/50 sticky top-0 glass backdrop-blur-xl z-10 relative">
+      <div className="px-6 py-6 border-b border-border/50  top-0 glass backdrop-blur-xl z-10 sticky">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -110,7 +112,7 @@ export default async function EventDetailPage({
               fill
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
           </div>
 
           {/* Main Event Details */}
@@ -257,12 +259,19 @@ export default async function EventDetailPage({
               eventDescription={event.description}
               eventThumbnail={event.coverImage}
               announcementSent={event.announcementSent}
-              registrations={registrations.map((reg: any) => ({
+              registrations={registrations.map((reg) => ({
                 email: reg.email,
                 name: reg.name,
               }))}
               allCommunityEmails={allCommunityEmails}
-              sentReminders={sentReminders}
+              sentReminders={
+                sentReminders ?? {
+                  "1-week": false,
+                  "3-days": false,
+                  tomorrow: false,
+                  today: false,
+                }
+              }
             />
           </div>
 

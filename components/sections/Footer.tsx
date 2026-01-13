@@ -4,12 +4,12 @@ import {
   Mail,
   MapPin,
   Phone,
-  Github,
   Twitter,
   Linkedin,
   Instagram,
   ArrowUp,
   Sparkles,
+  // Github,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

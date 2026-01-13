@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Image, Upload, Link2, Loader2 } from "lucide-react";
+import { Image as ImageIcon, Upload, Link2, Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -22,6 +22,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { uploadFileToS3 } from "@/lib/uploadFileToS3";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface InsertImageDialogProps {
   open: boolean;
@@ -126,7 +127,7 @@ export function InsertImageDialog({
       <DialogContent className="glass border-glow max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
-            <Image className="h-5 w-5 text-primary" />
+            <ImageIcon className="h-5 w-5 text-primary" />
             Insert Image
           </DialogTitle>
         </DialogHeader>
@@ -267,14 +268,18 @@ export function InsertImageDialog({
                   textAlign: alignment,
                 }}
               >
-                <img
-                  src={currentPreview}
-                  alt={alt || "Preview"}
-                  className="max-h-48 rounded-lg object-contain inline-block border border-border/30"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
+                <div className="relative inline-block max-h-48 w-auto">
+                  <Image
+                    src={currentPreview}
+                    alt={alt || "Image preview"}
+                    width={400}
+                    height={192}
+                    className="max-h-48 rounded-lg object-contain border border-border/30"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
               </div>
             </div>
           )}

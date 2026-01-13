@@ -132,7 +132,7 @@ export function EventEmailActions({
 
   return (
     <div className="space-y-4">
-      <Card className="border border-border/50 bg-gradient-to-br from-primary/5 via-background/50 to-background/50 backdrop-blur">
+      <Card className="border border-border/50 bg-linear-to-br from-primary/5 via-background/50 to-background/50 backdrop-blur">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="space-y-1.5">
@@ -165,7 +165,7 @@ export function EventEmailActions({
               <AlertDialogTrigger asChild>
                 <Button
                   disabled={announcementSent || isLoadingAnnouncement}
-                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                  className="w-full bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
                 >
                   {isLoadingAnnouncement
                     ? "Sending..."
@@ -208,7 +208,7 @@ export function EventEmailActions({
         </CardContent>
       </Card>
 
-      <Card className="border border-border/50 bg-gradient-to-br from-secondary/5 via-background/50 to-background/50 backdrop-blur">
+      <Card className="border border-border/50 bg-linear-to-br from-secondary/5 via-background/50 to-background/50 backdrop-blur">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="space-y-1.5">
@@ -274,7 +274,7 @@ export function EventEmailActions({
                     isLoadingReminder ||
                     sentReminders[selectedTimeFrame]
                   }
-                  className="w-full bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70"
+                  className="w-full bg-linear-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70"
                 >
                   {isLoadingReminder
                     ? "Sending..."

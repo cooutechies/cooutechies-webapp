@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Image from "next/image";
 import { createEvent } from "@/app/actions/events";
+import type { EventFormData } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,8 +53,7 @@ import {
 } from "@/components/ui/select";
 
 // Default speaker avatar
-const DEFAULT_SPEAKER_IMAGE =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f3f4f6'/%3E%3Cpath d='M100 100m-40 0a40 40 0 1 0 80 0a40 40 0 1 0 -80 0M100 120c-25 0-45 15-45 35v20h90v-20c0-20-20-35-45-35z' fill='%239ca3af'/%3E%3C/svg%3E";
+const DEFAULT_SPEAKER_IMAGE = "/default-speaker-avatar.png";
 
 // Speaker type
 type Speaker = {
@@ -95,7 +95,7 @@ const eventFormSchema = z.object({
       (val) => !val || (!isNaN(Number(val)) && Number(val) > 0),
       "Maximum attendees must be a positive number"
     ),
-  duration: z.string().optional().default("1 day"),
+  duration: z.string().min(1, "Duration is required"),
 });
 
 type EventFormValues = z.infer<typeof eventFormSchema>;
@@ -349,22 +349,21 @@ export function EventForm({ onSuccess }: { onSuccess?: () => void }) {
         return {
           name: speaker.name,
           role: speaker.title,
-          bio: speaker.bio,
           photo: photoUrl,
         };
       });
 
-      // Create event with S3 URLs
-      const eventData = {
+      // Create properly typed event data that matches EventFormData
+      const eventData: EventFormData = {
         title: values.title,
         description: values.description,
         date: values.date,
         location: values.location,
         coverImage: coverImageUrl,
+        duration: values.duration || "1 day",
         maxAttendees: values.maxAttendees
           ? Number.parseInt(values.maxAttendees)
-          : undefined,
-        duration: values.duration || "1 day",
+          : null,
         speakers: updatedSpeakers,
       };
 
@@ -388,8 +387,8 @@ export function EventForm({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <div className="w-full max-w-4xl mx-auto p-6 relative">
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-100 h-100 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-75 h-75 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 bg-background/80 backdrop-blur-sm rounded-xl border border-border/50 p-8 shadow-lg">
         <div className="mb-8">
@@ -436,7 +435,7 @@ export function EventForm({ onSuccess }: { onSuccess?: () => void }) {
                               className="object-cover"
                               sizes="(max-width: 768px) 100vw, 50vw"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute inset-0 bg-linear-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                                 <p className="text-xs text-muted-foreground">
                                   Preview
@@ -515,7 +514,7 @@ export function EventForm({ onSuccess }: { onSuccess?: () => void }) {
                   )}
                 />
 
-                {/* added duration field */}
+                {/* Duration field */}
                 <FormField
                   control={form.control}
                   name="duration"
@@ -677,7 +676,7 @@ export function EventForm({ onSuccess }: { onSuccess?: () => void }) {
                           alt={speaker.name}
                           width={60}
                           height={60}
-                          className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                          className="w-16 h-16 rounded-lg object-cover shrink-0"
                         />
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-foreground truncate">
@@ -727,7 +726,7 @@ export function EventForm({ onSuccess }: { onSuccess?: () => void }) {
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {/* Speaker Image */}
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                           <Image
                             src={speakerImagePreview || "/placeholder.svg"}
                             alt="Speaker preview"

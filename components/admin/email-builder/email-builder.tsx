@@ -118,8 +118,8 @@ export function EmailBuilder() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background effects */}
       <div className="fixed inset-0 grid-pattern opacity-20 pointer-events-none" />
-      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed top-0 right-0 w-150 h-150 bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-125 h-125 bg-secondary/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Header */}
       <header className="sticky top-0 z-50 glass backdrop-blur-xl border-b border-border/50">
@@ -137,7 +137,7 @@ export function EmailBuilder() {
                 </Button>
               </Link>
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 glow-subtle">
+                <div className="p-2 rounded-xl bg-linear-to-br from-primary/20 to-secondary/20 glow-subtle">
                   <Mail className="h-5 w-5 text-primary" />
                 </div>
                 <div className="hidden sm:block">
@@ -158,7 +158,7 @@ export function EmailBuilder() {
             <Button
               onClick={handleSend}
               disabled={sending || !canSend}
-              className="bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-opacity glow-primary"
+              className="bg-linear-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-opacity glow-primary"
             >
               {sending ? (
                 <>
@@ -206,7 +206,7 @@ export function EmailBuilder() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.2 }}
-            className="glass rounded-2xl border-glow p-4 md:p-6 min-h-[600px]"
+            className="glass rounded-2xl border-glow p-4 md:p-6 min-h-150"
           >
             <EmailPreview subject={subject} htmlContent={htmlContent} />
           </motion.div>

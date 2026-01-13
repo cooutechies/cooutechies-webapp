@@ -11,8 +11,6 @@ import {
   Section,
   Text,
   Hr,
-  Row,
-  Column,
 } from "@react-email/components";
 import * as React from "react";
 
@@ -102,19 +100,24 @@ export default function EventConfirmationEmail({
               <Img
                 src={logoUrl}
                 alt="COOU Techies"
-                width="600"
-                height="200"
-                style={{ ...logoStyle, margin: "0 auto 24px auto" }}
+                width="150"
+                height="150"
+                style={logoStyle}
               />
               <Section style={gradientLine} />
+            </Section>
+
+            {/* ============================================
+                CONFIRMATION BADGE
+                ============================================ */}
+            <Section style={badgeSection}>
+              <Text style={confirmationBadge}>✅ REGISTRATION CONFIRMED</Text>
             </Section>
 
             {/* ============================================
                 HERO SECTION
                 ============================================ */}
             <Section style={heroSection}>
-              <Text style={welcomeBadge}>✅ REGISTRATION CONFIRMED</Text>
-
               <Heading style={mainHeading}>
                 You&apos;re
                 <br />
@@ -135,10 +138,16 @@ export default function EventConfirmationEmail({
               </Text>
 
               <Text style={paragraphText}>
-                We&apos;re excited to confirm your registration for{" "}
+                🎉 We&apos;re excited to confirm your registration for{" "}
                 <strong style={highlightStrong}>{eventTitle}</strong>! This is
                 going to be an incredible experience, and we can&apos;t wait to
                 see you there.
+              </Text>
+
+              <Text style={paragraphText}>
+                Mark your calendar and get ready for an unforgettable day of
+                learning, networking, and innovation with fellow tech
+                enthusiasts!
               </Text>
             </Section>
 
@@ -158,25 +167,25 @@ export default function EventConfirmationEmail({
 
                 <Hr style={eventDivider} />
 
-                {/* Event Info Grid */}
-                <Row style={eventInfoRow}>
-                  <Column style={eventInfoColumn}>
-                    <Text style={eventInfoIcon}>📅</Text>
-                    <Text style={eventInfoLabel}>Date</Text>
-                    <Text style={eventInfoValue}>{eventDate}</Text>
-                  </Column>
+                {/* Date */}
+                <Section style={detailItem}>
+                  <Text style={detailIcon}>📅</Text>
+                  <Text style={detailLabel}>Date</Text>
+                  <Text style={detailValue}>{eventDate}</Text>
+                </Section>
 
-                  <Column style={eventInfoColumn}>
-                    <Text style={eventInfoIcon}>⏰</Text>
-                    <Text style={eventInfoLabel}>Time</Text>
-                    <Text style={eventInfoValue}>{eventTime}</Text>
-                  </Column>
-                </Row>
+                {/* Time */}
+                <Section style={detailItem}>
+                  <Text style={detailIcon}>⏰</Text>
+                  <Text style={detailLabel}>Time</Text>
+                  <Text style={detailValue}>{eventTime}</Text>
+                </Section>
 
-                <Section style={locationSection}>
-                  <Text style={eventInfoIcon}>📍</Text>
-                  <Text style={eventInfoLabel}>Location</Text>
-                  <Text style={locationValue}>{eventLocation}</Text>
+                {/* Location */}
+                <Section style={detailItem}>
+                  <Text style={detailIcon}>📍</Text>
+                  <Text style={detailLabel}>Location</Text>
+                  <Text style={detailValue}>{eventLocation}</Text>
                 </Section>
               </Section>
             </Section>
@@ -185,87 +194,83 @@ export default function EventConfirmationEmail({
                 WHAT TO EXPECT SECTION
                 ============================================ */}
             <Section style={expectSection}>
-              <Text style={expectHeading}>What to Expect</Text>
+              <Text style={expectHeading}>✨ What to Expect</Text>
 
-              <Row style={expectRow}>
-                <Column style={expectColumn}>
-                  <Section style={expectCard}>
-                    <Text style={expectIcon}>🎯</Text>
-                    <Text style={expectTitle}>Engaging Content</Text>
-                    <Text style={expectDesc}>
-                      Learn from industry experts and gain valuable insights
-                    </Text>
-                  </Section>
-                </Column>
+              {/* Stacked cards */}
+              <Section style={expectCard}>
+                <Text style={expectIcon}>🎯</Text>
+                <Text style={expectTitle}>Engaging Content</Text>
+                <Text style={expectDesc}>
+                  Learn from industry experts and gain valuable insights that
+                  will elevate your tech journey
+                </Text>
+              </Section>
 
-                <Column style={expectColumn}>
-                  <Section style={expectCard}>
-                    <Text style={expectIcon}>🤝</Text>
-                    <Text style={expectTitle}>Networking</Text>
-                    <Text style={expectDesc}>
-                      Connect with like-minded tech enthusiasts
-                    </Text>
-                  </Section>
-                </Column>
-              </Row>
+              <Section style={expectCard}>
+                <Text style={expectIcon}>🤝</Text>
+                <Text style={expectTitle}>Networking Opportunities</Text>
+                <Text style={expectDesc}>
+                  Connect with like-minded tech enthusiasts and build meaningful
+                  relationships
+                </Text>
+              </Section>
 
-              <Row style={expectRow}>
-                <Column style={expectColumn}>
-                  <Section style={expectCard}>
-                    <Text style={expectIcon}>💡</Text>
-                    <Text style={expectTitle}>Hands-on</Text>
-                    <Text style={expectDesc}>
-                      Interactive sessions and practical workshops
-                    </Text>
-                  </Section>
-                </Column>
+              <Section style={expectCard}>
+                <Text style={expectIcon}>💡</Text>
+                <Text style={expectTitle}>Hands-on Experience</Text>
+                <Text style={expectDesc}>
+                  Participate in interactive sessions and practical workshops
+                  that you can apply immediately
+                </Text>
+              </Section>
 
-                <Column style={expectColumn}>
-                  <Section style={expectCard}>
-                    <Text style={expectIcon}>🎁</Text>
-                    <Text style={expectTitle}>Refreshments</Text>
-                    <Text style={expectDesc}>
-                      Exclusive resources and Refreshments
-                    </Text>
-                  </Section>
-                </Column>
-              </Row>
+              <Section style={expectCard}>
+                <Text style={expectIcon}>🎁</Text>
+                <Text style={expectTitle}>Refreshments & Goodies</Text>
+                <Text style={expectDesc}>
+                  Enjoy refreshments, exclusive resources, and surprise
+                  giveaways throughout the event
+                </Text>
+              </Section>
             </Section>
 
             {/* ============================================
                 PREPARATION TIPS
                 ============================================ */}
             <Section style={tipsSection}>
-              <Text style={tipsHeading}>📝 Quick Tips for the Event</Text>
+              <Text style={tipsHeading}>📋 Preparation Tips</Text>
 
-              <Section style={tipsList}>
-                <Text style={tipItem}>
-                  ✓ Arrive 15 minutes early to get settled
-                </Text>
-                <Text style={tipItem}>
-                  ✓ Bring a notebook and pen for taking notes
-                </Text>
-                <Text style={tipItem}>
-                  ✓ Charge your devices if you&apos;re bringing them
-                </Text>
-                <Text style={tipItem}>
-                  ✓ Come ready to learn, network, and have fun!
-                </Text>
-              </Section>
+              <Text style={tipItem}>
+                1️⃣ <strong style={tipStrong}>Arrive 15 minutes early</strong> to
+                get settled and network before we start
+              </Text>
+              <Text style={tipItem}>
+                2️⃣ <strong style={tipStrong}>Bring a notebook and pen</strong>{" "}
+                for taking notes and jotting down ideas
+              </Text>
+              <Text style={tipItem}>
+                3️⃣ <strong style={tipStrong}>Charge your devices</strong> if
+                you&apos;re bringing a laptop or tablet
+              </Text>
+              <Text style={tipItem}>
+                4️⃣ <strong style={tipStrong}>Come with an open mind</strong> and
+                be ready to learn, network, and have fun!
+              </Text>
             </Section>
 
             {/* ============================================
                 CALL TO ACTION
                 ============================================ */}
             <Section style={ctaSection}>
-              <Text style={ctaIntro}>Stay Connected</Text>
+              <Text style={ctaIntro}>🔥 Stay Connected</Text>
 
               <Button style={ctaButton} href={whatsappChannelLink}>
                 Join Our WhatsApp Channel →
               </Button>
 
               <Text style={ctaSubtext}>
-                Get real-time updates and connect with other attendees
+                Get real-time updates and connect with other attendees before
+                the event
               </Text>
             </Section>
 
@@ -275,20 +280,23 @@ export default function EventConfirmationEmail({
             <Section style={footerSection}>
               <Hr style={footerDivider} />
 
+              <Text style={footerTitle}>Have Questions?</Text>
+
               <Text style={footerText}>
-                Questions about the event? We&apos;re here to help!
+                We&apos;re here to help! Reach out to us anytime and we&apos;ll
+                get back to you as soon as possible.
               </Text>
 
               <Link href="mailto:cooutechies@gmail.com" style={footerLink}>
-                cooutechies@gmail.com
+                contact@cooutechies.com
               </Link>
 
-              <Text style={copyrightText}>
-                © {currentYear} COOU Techies. Building the future, together.
+              <Text style={socialText}>
+                Follow us for updates and announcements
               </Text>
 
-              <Text style={universityText}>
-                Chukwuemeka Odumegwu Ojukwu University
+              <Text style={copyrightText}>
+                © {currentYear} COOU Techies. Building the Future Techies
               </Text>
             </Section>
           </Container>
@@ -321,18 +329,15 @@ const outerContainer = {
   borderRadius: "24px",
   background:
     "linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(234, 179, 8, 0.2), rgba(34, 197, 94, 0.1))",
-  width: "100%",
 };
 
 const container = {
   backgroundColor: "#151c2c",
   borderRadius: "20px",
   padding: "0",
-  margin: "0",
   overflow: "hidden",
   boxShadow:
     "0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-  width: "100%",
 };
 
 // ============================================
@@ -347,14 +352,11 @@ const headerSection = {
 };
 
 const logoStyle = {
+  display: "block",
+  margin: "0 auto 24px auto",
   borderRadius: "16px",
   boxShadow: "0 0 40px rgba(34, 197, 94, 0.3), 0 4px 20px rgba(0, 0, 0, 0.4)",
   border: "2px solid rgba(34, 197, 94, 0.3)",
-  display: "block",
-  margin: "0 auto 24px auto",
-  width: "100%",
-  maxWidth: "600px",
-  height: "auto",
 };
 
 const gradientLine = {
@@ -367,25 +369,34 @@ const gradientLine = {
 };
 
 // ============================================
+// BADGE SECTION
+// ============================================
+
+const badgeSection = {
+  textAlign: "center" as const,
+  padding: "0 40px 24px 40px",
+};
+
+const confirmationBadge = {
+  display: "inline-block",
+  fontSize: "16px",
+  fontWeight: "700",
+  letterSpacing: "2px",
+  color: "#22c55e",
+  backgroundColor: "rgba(34, 197, 94, 0.15)",
+  padding: "12px 28px",
+  borderRadius: "100px",
+  border: "2px solid rgba(34, 197, 94, 0.3)",
+  margin: "0",
+};
+
+// ============================================
 // HERO SECTION STYLES
 // ============================================
 
 const heroSection = {
   textAlign: "center" as const,
-  padding: "24px 40px 40px 40px",
-};
-
-const welcomeBadge = {
-  display: "inline-block",
-  fontSize: "14px",
-  fontWeight: "700",
-  letterSpacing: "2px",
-  color: "#22c55e",
-  backgroundColor: "rgba(34, 197, 94, 0.15)",
-  padding: "10px 24px",
-  borderRadius: "100px",
-  border: "1px solid rgba(34, 197, 94, 0.25)",
-  margin: "0 0 24px 0",
+  padding: "0 40px 32px 40px",
 };
 
 const mainHeading = {
@@ -407,10 +418,9 @@ const gradientText = {
 
 const heroSubtitle = {
   fontSize: "18px",
-  fontWeight: "500",
-  color: "#94a3b8",
+  lineHeight: "1.7",
+  color: "#e2e8f0",
   margin: "0",
-  lineHeight: "1.6",
 };
 
 // ============================================
@@ -436,9 +446,8 @@ const nameHighlight = {
 const paragraphText = {
   fontSize: "17px",
   lineHeight: "1.8",
-  color: "#e2e8f0",
-  margin: "0 0 20px 0",
-  fontWeight: "400",
+  color: "#cbd5e1",
+  margin: "0 0 16px 0",
 };
 
 const highlightStrong = {
@@ -451,15 +460,16 @@ const highlightStrong = {
 // ============================================
 
 const eventDetailsSection = {
-  padding: "0 40px 40px 40px",
+  padding: "32px 40px",
+  backgroundColor: "rgba(34, 197, 94, 0.05)",
 };
 
 const eventDetailsHeading = {
   fontFamily: '"Orbitron", "Inter", sans-serif',
-  fontSize: "18px",
-  fontWeight: "700",
-  color: "#f8fafc",
-  margin: "0 0 24px 0",
+  fontSize: "22px",
+  fontWeight: "800",
+  color: "#22c55e",
+  margin: "0 0 20px 0",
   letterSpacing: "0.5px",
 };
 
@@ -478,13 +488,15 @@ const eventTitle_style = {
   color: "#22c55e",
   margin: "0 0 16px 0",
   lineHeight: "1.3",
+  textAlign: "center" as const,
 };
 
 const eventDescription_style = {
-  fontSize: "16px",
-  color: "#cbd5e1",
+  fontSize: "17px",
+  color: "#e2e8f0",
   margin: "0 0 24px 0",
-  lineHeight: "1.6",
+  lineHeight: "1.7",
+  textAlign: "center" as const,
 };
 
 const eventDivider = {
@@ -493,49 +505,32 @@ const eventDivider = {
   margin: "24px 0",
 };
 
-const eventInfoRow = {
-  marginBottom: "16px",
-};
-
-const eventInfoColumn = {
-  width: "50%",
+const detailItem = {
   textAlign: "center" as const,
-  padding: "0 8px",
+  marginBottom: "24px",
+  padding: "16px",
+  backgroundColor: "rgba(15, 23, 42, 0.4)",
+  borderRadius: "12px",
 };
 
-const eventInfoIcon = {
-  fontSize: "24px",
-  margin: "0 0 8px 0",
+const detailIcon = {
+  fontSize: "32px",
+  margin: "0 0 12px 0",
   lineHeight: "1",
 };
 
-const eventInfoLabel = {
-  fontSize: "12px",
+const detailLabel = {
+  fontSize: "14px",
   color: "#94a3b8",
   textTransform: "uppercase" as const,
   letterSpacing: "1px",
   fontWeight: "600",
-  margin: "0 0 6px 0",
+  margin: "0 0 8px 0",
 };
 
-const eventInfoValue = {
-  fontSize: "16px",
-  color: "#f8fafc",
-  fontWeight: "700",
-  margin: "0",
-};
-
-const locationSection = {
-  textAlign: "center" as const,
-  marginTop: "24px",
-  padding: "20px",
-  backgroundColor: "rgba(15, 23, 42, 0.5)",
-  borderRadius: "12px",
-};
-
-const locationValue = {
-  fontSize: "16px",
-  color: "#f8fafc",
+const detailValue = {
+  fontSize: "18px",
+  color: "#22c55e",
   fontWeight: "700",
   margin: "0",
   lineHeight: "1.5",
@@ -546,58 +541,50 @@ const locationValue = {
 // ============================================
 
 const expectSection = {
-  padding: "0 32px 40px 32px",
+  padding: "32px 40px",
+  backgroundColor: "rgba(234, 179, 8, 0.08)",
+  borderTop: "2px solid rgba(234, 179, 8, 0.2)",
+  borderBottom: "2px solid rgba(234, 179, 8, 0.2)",
 };
 
 const expectHeading = {
   fontFamily: '"Orbitron", "Inter", sans-serif',
-  fontSize: "20px",
-  fontWeight: "700",
-  color: "#f8fafc",
-  textAlign: "center" as const,
-  margin: "0 0 28px 0",
+  fontSize: "24px",
+  fontWeight: "800",
+  color: "#eab308",
+  margin: "0 0 24px 0",
   letterSpacing: "0.5px",
 };
 
-const expectRow = {
-  marginBottom: "12px",
-};
-
-const expectColumn = {
-  width: "50%",
-  verticalAlign: "top",
-  padding: "0 8px",
-};
-
 const expectCard = {
-  backgroundColor: "rgba(34, 197, 94, 0.06)",
-  border: "1px solid rgba(34, 197, 94, 0.15)",
-  borderRadius: "14px",
-  padding: "20px 14px",
+  backgroundColor: "rgba(234, 179, 8, 0.08)",
+  border: "2px solid rgba(234, 179, 8, 0.2)",
+  borderRadius: "12px",
+  padding: "24px",
   textAlign: "center" as const,
+  marginBottom: "16px",
 };
 
 const expectIcon = {
-  fontSize: "28px",
-  margin: "0 0 10px 0",
+  fontSize: "32px",
+  margin: "0 0 12px 0",
   lineHeight: "1",
 };
 
 const expectTitle = {
   fontFamily: '"Orbitron", "Inter", sans-serif',
-  fontSize: "15px",
-  fontWeight: "700",
-  color: "#22c55e",
-  margin: "0 0 8px 0",
+  fontSize: "18px",
+  fontWeight: "800",
+  color: "#eab308",
+  margin: "0 0 10px 0",
   letterSpacing: "0.3px",
 };
 
 const expectDesc = {
-  fontSize: "13px",
+  fontSize: "16px",
   color: "#cbd5e1",
   margin: "0",
-  lineHeight: "1.5",
-  fontWeight: "400",
+  lineHeight: "1.7",
 };
 
 // ============================================
@@ -605,31 +592,30 @@ const expectDesc = {
 // ============================================
 
 const tipsSection = {
-  backgroundColor: "rgba(15, 23, 42, 0.6)",
-  borderTop: "1px solid rgba(34, 197, 94, 0.1)",
-  borderBottom: "1px solid rgba(34, 197, 94, 0.1)",
+  backgroundColor: "rgba(59, 130, 246, 0.08)",
+  borderTop: "2px solid rgba(59, 130, 246, 0.2)",
   padding: "32px 40px",
 };
 
 const tipsHeading = {
   fontFamily: '"Orbitron", "Inter", sans-serif',
-  fontSize: "18px",
-  fontWeight: "700",
-  color: "#f8fafc",
-  margin: "0 0 20px 0",
+  fontSize: "24px",
+  fontWeight: "800",
+  color: "#3b82f6",
+  margin: "0 0 24px 0",
   letterSpacing: "0.5px",
 };
 
-const tipsList = {
-  margin: "0",
+const tipItem = {
+  fontSize: "17px",
+  color: "#e2e8f0",
+  margin: "0 0 14px 0",
+  lineHeight: "1.8",
 };
 
-const tipItem = {
-  fontSize: "15px",
-  color: "#e2e8f0",
-  margin: "0 0 12px 0",
-  lineHeight: "1.6",
-  fontWeight: "500",
+const tipStrong = {
+  color: "#3b82f6",
+  fontWeight: "700",
 };
 
 // ============================================
@@ -638,36 +624,37 @@ const tipItem = {
 
 const ctaSection = {
   textAlign: "center" as const,
-  padding: "40px 40px 48px 40px",
+  padding: "48px 40px",
 };
 
 const ctaIntro = {
-  fontSize: "22px",
+  fontSize: "18px",
   fontWeight: "700",
   color: "#f8fafc",
-  margin: "0 0 28px 0",
+  margin: "0 0 24px 0",
+  lineHeight: "1.5",
 };
 
 const ctaButton = {
   background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
   color: "#ffffff",
   padding: "20px 52px",
-  borderRadius: "14px",
+  borderRadius: "12px",
   textDecoration: "none",
   fontWeight: "800",
-  fontSize: "18px",
+  fontSize: "19px",
   fontFamily: '"Orbitron", "Inter", sans-serif',
   display: "inline-block",
-  boxShadow: "0 8px 24px rgba(34, 197, 94, 0.35), 0 4px 8px rgba(0, 0, 0, 0.3)",
+  boxShadow: "0 8px 24px rgba(34, 197, 94, 0.35)",
   border: "none",
   letterSpacing: "0.5px",
 };
 
 const ctaSubtext = {
-  fontSize: "15px",
-  fontWeight: "500",
+  fontSize: "16px",
   color: "#94a3b8",
   margin: "20px 0 0 0",
+  lineHeight: "1.5",
 };
 
 // ============================================
@@ -675,41 +662,47 @@ const ctaSubtext = {
 // ============================================
 
 const footerSection = {
-  padding: "32px 40px 40px 40px",
+  padding: "40px 40px 40px 40px",
   textAlign: "center" as const,
 };
 
 const footerDivider = {
   border: "none",
   borderTop: "1px solid rgba(148, 163, 184, 0.1)",
-  margin: "0 0 32px 0",
+  margin: "0 0 28px 0",
+};
+
+const footerTitle = {
+  fontSize: "20px",
+  fontWeight: "700",
+  color: "#f8fafc",
+  margin: "0 0 12px 0",
 };
 
 const footerText = {
   color: "#94a3b8",
   fontSize: "16px",
-  fontWeight: "500",
-  margin: "0 0 12px 0",
+  margin: "0 0 16px 0",
+  lineHeight: "1.6",
 };
 
 const footerLink = {
   color: "#22c55e",
   textDecoration: "none",
-  fontWeight: "600",
-  fontSize: "16px",
+  fontWeight: "700",
+  fontSize: "17px",
+};
+
+const socialText = {
+  color: "#94a3b8",
+  fontSize: "15px",
+  margin: "20px 0 0 0",
+  lineHeight: "1.5",
 };
 
 const copyrightText = {
   color: "#64748b",
   fontSize: "14px",
-  fontWeight: "500",
-  margin: "24px 0 8px 0",
-};
-
-const universityText = {
-  color: "#64748b",
-  fontSize: "13px",
-  fontWeight: "500",
-  margin: "0",
-  fontStyle: "italic" as const,
+  margin: "24px 0 0 0",
+  lineHeight: "1.5",
 };

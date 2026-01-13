@@ -95,14 +95,13 @@ export default function ConfirmationEmail({
                 Logo with decorative gradient line
                 ============================================ */}
             <Section style={headerSection}>
-              {/* Logo with glow effect - Fallback to letter C if logo fails */}
-
+              {/* Logo with glow effect */}
               <Img
                 src={logoUrl}
                 alt="COOU Techies"
-                width="600"
-                height="200"
-                style={{ ...logoStyle, margin: "0 auto 24px auto" }}
+                width="150"
+                height="150"
+                style={logoStyle}
               />
 
               {/* Decorative gradient line below logo */}
@@ -110,13 +109,17 @@ export default function ConfirmationEmail({
             </Section>
 
             {/* ============================================
+                WELCOME BADGE
+                ============================================ */}
+            <Section style={badgeSection}>
+              <Text style={welcomeBadge}>✨ WELCOME TO THE COMMUNITY</Text>
+            </Section>
+
+            {/* ============================================
                 HERO SECTION
                 Main welcome message with gradient text
                 ============================================ */}
             <Section style={heroSection}>
-              {/* Decorative badge */}
-              <Text style={welcomeBadge}>✨ WELCOME TO THE COMMUNITY</Text>
-
               {/* Main heading with gradient effect */}
               <Heading style={mainHeading}>
                 Welcome to
@@ -126,8 +129,8 @@ export default function ConfirmationEmail({
 
               {/* Subheading */}
               <Text style={heroSubtitle}>
-                You&apos;re officially part of Nigeria&apos;s most vibrant tech
-                community
+                You&apos;re officially part of the most vibrant tech
+                community 
               </Text>
             </Section>
 
@@ -141,7 +144,7 @@ export default function ConfirmationEmail({
               </Text>
 
               <Text style={paragraphText}>
-                Thank you for joining COOU Techies! We&apos;re absolutely
+                🎉 Thank you for joining COOU Techies! We&apos;re absolutely
                 thrilled to have you as part of our growing family of{" "}
                 <strong style={highlightStrong}>500+ tech enthusiasts</strong>,
                 innovators, and future industry leaders.
@@ -149,72 +152,17 @@ export default function ConfirmationEmail({
 
               <Text style={paragraphText}>
                 Your journey into the world of technology just got a whole lot
-                more exciting. Here&apos;s what awaits you:
+                more exciting. Here&apos;s what makes our community special and
+                what awaits you:
               </Text>
             </Section>
 
             {/* ============================================
-                BENEFITS SECTION
-                Grid of community benefits with modern cards
-                ============================================ */}
-            <Section style={benefitsSection}>
-              {/* Benefits Grid - 2x2 layout */}
-              <Row style={benefitsRow}>
-                {/* Benefit 1: Connect */}
-                <Column style={benefitColumn}>
-                  <Section style={benefitCard}>
-                    <Text style={benefitIcon}>🔗</Text>
-                    <Text style={benefitTitle}>Connect</Text>
-                    <Text style={benefitDesc}>
-                      Network with brilliant minds and build lasting
-                      relationships
-                    </Text>
-                  </Section>
-                </Column>
-
-                {/* Benefit 2: Learn */}
-                <Column style={benefitColumn}>
-                  <Section style={benefitCard}>
-                    <Text style={benefitIcon}>📚</Text>
-                    <Text style={benefitTitle}>Learn</Text>
-                    <Text style={benefitDesc}>
-                      Access exclusive workshops, resources, and mentorship
-                    </Text>
-                  </Section>
-                </Column>
-              </Row>
-
-              <Row style={benefitsRow}>
-                {/* Benefit 3: Build */}
-                <Column style={benefitColumn}>
-                  <Section style={benefitCard}>
-                    <Text style={benefitIcon}>⚡</Text>
-                    <Text style={benefitTitle}>Build</Text>
-                    <Text style={benefitDesc}>
-                      Collaborate on real projects and join hackathons
-                    </Text>
-                  </Section>
-                </Column>
-
-                {/* Benefit 4: Grow */}
-                <Column style={benefitColumn}>
-                  <Section style={benefitCard}>
-                    <Text style={benefitIcon}>🚀</Text>
-                    <Text style={benefitTitle}>Grow</Text>
-                    <Text style={benefitDesc}>
-                      Accelerate your career and unlock opportunities
-                    </Text>
-                  </Section>
-                </Column>
-              </Row>
-            </Section>
-
-            {/* ============================================
-                CALL TO ACTION
+                CALL TO ACTION (Early Placement)
                 Primary WhatsApp join button with glow effect
                 ============================================ */}
             <Section style={ctaSection}>
-              <Text style={ctaIntro}>Ready to dive in?</Text>
+              <Text style={ctaIntro}>🔥 Ready to dive in?</Text>
 
               {/* Primary CTA button */}
               <Button style={ctaButton} href={whatsappChannelLink}>
@@ -222,7 +170,79 @@ export default function ConfirmationEmail({
               </Button>
 
               <Text style={ctaSubtext}>
-                Connect instantly with 500+ members
+                Connect instantly with 500+ passionate tech enthusiasts
+              </Text>
+            </Section>
+
+            {/* ============================================
+                BENEFITS SECTION
+                Stacked community benefits with modern cards
+                ============================================ */}
+            <Section style={benefitsSection}>
+              <Text style={benefitsHeader}>🌟 What You&apos;ll Experience</Text>
+
+              {/* Benefit 1: Connect */}
+              <Section style={benefitCard}>
+                <Text style={benefitIcon}>🔗</Text>
+                <Text style={benefitTitle}>Connect</Text>
+                <Text style={benefitDesc}>
+                  Network with brilliant minds and build lasting relationships
+                  in tech
+                </Text>
+              </Section>
+
+              {/* Benefit 2: Learn */}
+              <Section style={benefitCard}>
+                <Text style={benefitIcon}>📚</Text>
+                <Text style={benefitTitle}>Learn</Text>
+                <Text style={benefitDesc}>
+                  Access exclusive workshops, resources, and expert mentorship
+                  programs
+                </Text>
+              </Section>
+
+              {/* Benefit 3: Build */}
+              <Section style={benefitCard}>
+                <Text style={benefitIcon}>⚡</Text>
+                <Text style={benefitTitle}>Build</Text>
+                <Text style={benefitDesc}>
+                  Collaborate on real-world projects and participate in exciting
+                  hackathons
+                </Text>
+              </Section>
+
+              {/* Benefit 4: Grow */}
+              <Section style={benefitCard}>
+                <Text style={benefitIcon}>🚀</Text>
+                <Text style={benefitTitle}>Grow</Text>
+                <Text style={benefitDesc}>
+                  Accelerate your career path and unlock new opportunities
+                </Text>
+              </Section>
+            </Section>
+
+            {/* ============================================
+                NEXT STEPS SECTION
+                ============================================ */}
+            <Section style={nextStepsSection}>
+              <Text style={nextStepsTitle}>📋 Your Next Steps</Text>
+
+              <Text style={stepItem}>
+                1️⃣{" "}
+                <strong style={stepStrong}>Join our WhatsApp community</strong>{" "}
+                to connect with 500+ members instantly
+              </Text>
+              <Text style={stepItem}>
+                2️⃣ <strong style={stepStrong}>Introduce yourself</strong> and
+                tell us what you&apos;re passionate about
+              </Text>
+              <Text style={stepItem}>
+                3️⃣ <strong style={stepStrong}>Stay updated</strong> on upcoming
+                events, workshops, and opportunities
+              </Text>
+              <Text style={stepItem}>
+                4️⃣ <strong style={stepStrong}>Get involved</strong> in projects,
+                discussions, and community activities
               </Text>
             </Section>
 
@@ -232,7 +252,7 @@ export default function ConfirmationEmail({
                 ============================================ */}
             <Section style={statsSection}>
               {/* Section title */}
-              <Text style={statsHeading}>Our Community Impact</Text>
+              <Text style={statsHeading}>📊 Our Community Impact</Text>
 
               {/* Stats grid */}
               <Row style={statsRow}>
@@ -264,22 +284,27 @@ export default function ConfirmationEmail({
               {/* Decorative divider */}
               <Hr style={footerDivider} />
 
+              {/* Footer title */}
+              <Text style={footerTitle}>Have Questions?</Text>
+
               {/* Contact info */}
               <Text style={footerText}>
-                Questions? We&apos;re here to help!
+                We&apos;re here to help! Reach out to us anytime and we&apos;ll
+                get back to you as soon as possible.
               </Text>
 
               <Link href="mailto:cooutechies@gmail.com" style={footerLink}>
                 contact@cooutechies.com
               </Link>
 
-              {/* Copyright with dynamic year */}
-              <Text style={copyrightText}>
-                © {currentYear} COOU Techies. Building the future, together.
+              {/* Social prompt */}
+              <Text style={socialText}>
+                Follow us for updates and announcements
               </Text>
 
-              <Text style={universityText}>
-                Chukwuemeka Odumegwu Ojukwu University
+              {/* Copyright with dynamic year */}
+              <Text style={copyrightText}>
+                © {currentYear} COOU Techies. Building the Future Techies
               </Text>
             </Section>
           </Container>
@@ -324,7 +349,6 @@ const outerContainer = {
   borderRadius: "24px",
   background:
     "linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(234, 179, 8, 0.2), rgba(34, 197, 94, 0.1))",
-  width: "100%",
 };
 
 /**
@@ -335,11 +359,9 @@ const container = {
   backgroundColor: "#151c2c",
   borderRadius: "20px",
   padding: "0",
-  margin: "0",
   overflow: "hidden",
   boxShadow:
     "0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-  width: "100%",
 };
 
 // ============================================
@@ -357,23 +379,15 @@ const headerSection = {
 };
 
 /**
- * Logo styling with subtle glow
+ * Logo styling with subtle glow - Square format
  */
 const logoStyle = {
+  display: "block",
+  margin: "0 auto 24px auto",
   borderRadius: "16px",
   boxShadow: "0 0 40px rgba(34, 197, 94, 0.3), 0 4px 20px rgba(0, 0, 0, 0.4)",
   border: "2px solid rgba(34, 197, 94, 0.3)",
-  display: "block",
-  margin: "0 auto 24px auto",
-  width: "100%",
-  maxWidth: "600px",
-  height: "auto",
 };
-
-/**
- * Logo fallback - letter C in green background
- * Shows when logo image doesn't load
- */
 
 /**
  * Decorative gradient line below logo
@@ -388,6 +402,31 @@ const gradientLine = {
 };
 
 // ============================================
+// BADGE SECTION
+// ============================================
+
+const badgeSection = {
+  textAlign: "center" as const,
+  padding: "0 40px 24px 40px",
+};
+
+/**
+ * Welcome badge styling
+ */
+const welcomeBadge = {
+  display: "inline-block",
+  fontSize: "16px",
+  fontWeight: "700",
+  letterSpacing: "2px",
+  color: "#22c55e",
+  backgroundColor: "rgba(34, 197, 94, 0.15)",
+  padding: "12px 28px",
+  borderRadius: "100px",
+  border: "2px solid rgba(34, 197, 94, 0.3)",
+  margin: "0",
+};
+
+// ============================================
 // HERO SECTION STYLES
 // ============================================
 
@@ -396,23 +435,7 @@ const gradientLine = {
  */
 const heroSection = {
   textAlign: "center" as const,
-  padding: "24px 40px 40px 40px",
-};
-
-/**
- * Welcome badge styling
- */
-const welcomeBadge = {
-  display: "inline-block",
-  fontSize: "14px",
-  fontWeight: "700",
-  letterSpacing: "2px",
-  color: "#22c55e",
-  backgroundColor: "rgba(34, 197, 94, 0.15)",
-  padding: "10px 24px",
-  borderRadius: "100px",
-  border: "1px solid rgba(34, 197, 94, 0.25)",
-  margin: "0 0 24px 0",
+  padding: "0 40px 32px 40px",
 };
 
 /**
@@ -444,10 +467,9 @@ const gradientText = {
  */
 const heroSubtitle = {
   fontSize: "18px",
-  fontWeight: "500",
-  color: "#94a3b8",
+  lineHeight: "1.7",
+  color: "#e2e8f0",
   margin: "0",
-  lineHeight: "1.6",
 };
 
 // ============================================
@@ -485,9 +507,8 @@ const nameHighlight = {
 const paragraphText = {
   fontSize: "17px",
   lineHeight: "1.8",
-  color: "#e2e8f0",
-  margin: "0 0 20px 0",
-  fontWeight: "400",
+  color: "#cbd5e1",
+  margin: "0 0 16px 0",
 };
 
 /**
@@ -506,7 +527,20 @@ const highlightStrong = {
  * Benefits section container
  */
 const benefitsSection = {
-  padding: "0 32px 40px 32px",
+  padding: "32px 40px",
+  backgroundColor: "rgba(34, 197, 94, 0.05)",
+};
+
+/**
+ * Benefits section header
+ */
+const benefitsHeader = {
+  fontSize: "24px",
+  fontWeight: "800",
+  color: "#22c55e",
+  margin: "0 0 24px 0",
+  fontFamily: '"Orbitron", "Inter", sans-serif',
+  textAlign: "center" as const,
 };
 
 /**
@@ -521,27 +555,27 @@ const benefitsRow = {
  */
 const benefitColumn = {
   width: "50%",
-  verticalAlign: "top",
+  verticalAlign: "top" as const,
   padding: "0 8px",
 };
 
 /**
- * Individual benefit card
- * Glassmorphism effect with hover-ready styling
+ * Individual benefit card - Full width stacked
  */
 const benefitCard = {
-  backgroundColor: "rgba(34, 197, 94, 0.06)",
-  border: "1px solid rgba(34, 197, 94, 0.15)",
-  borderRadius: "16px",
-  padding: "24px 16px",
+  backgroundColor: "rgba(34, 197, 94, 0.08)",
+  border: "2px solid rgba(34, 197, 94, 0.2)",
+  borderRadius: "12px",
+  padding: "24px",
   textAlign: "center" as const,
+  marginBottom: "16px",
 };
 
 /**
  * Benefit icon styling
  */
 const benefitIcon = {
-  fontSize: "28px",
+  fontSize: "32px",
   margin: "0 0 12px 0",
   lineHeight: "1",
 };
@@ -566,7 +600,37 @@ const benefitDesc = {
   color: "#cbd5e1",
   margin: "0",
   lineHeight: "1.6",
-  fontWeight: "400",
+};
+
+// ============================================
+// NEXT STEPS SECTION
+// ============================================
+
+const nextStepsSection = {
+  padding: "32px 40px",
+  backgroundColor: "rgba(234, 179, 8, 0.08)",
+  borderTop: "2px solid rgba(234, 179, 8, 0.2)",
+  borderBottom: "2px solid rgba(234, 179, 8, 0.2)",
+};
+
+const nextStepsTitle = {
+  fontSize: "24px",
+  fontWeight: "800",
+  color: "#eab308",
+  margin: "0 0 24px 0",
+  fontFamily: '"Orbitron", "Inter", sans-serif',
+};
+
+const stepItem = {
+  fontSize: "17px",
+  lineHeight: "1.8",
+  color: "#e2e8f0",
+  margin: "0 0 14px 0",
+};
+
+const stepStrong = {
+  color: "#eab308",
+  fontWeight: "700",
 };
 
 // ============================================
@@ -578,17 +642,18 @@ const benefitDesc = {
  */
 const ctaSection = {
   textAlign: "center" as const,
-  padding: "0 40px 48px 40px",
+  padding: "48px 40px",
 };
 
 /**
  * CTA intro text
  */
 const ctaIntro = {
-  fontSize: "22px",
+  fontSize: "18px",
   fontWeight: "700",
   color: "#f8fafc",
-  margin: "0 0 28px 0",
+  margin: "0 0 24px 0",
+  lineHeight: "1.5",
 };
 
 /**
@@ -599,13 +664,13 @@ const ctaButton = {
   background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
   color: "#ffffff",
   padding: "20px 52px",
-  borderRadius: "14px",
+  borderRadius: "12px",
   textDecoration: "none",
   fontWeight: "800",
-  fontSize: "18px",
+  fontSize: "19px",
   fontFamily: '"Orbitron", "Inter", sans-serif',
   display: "inline-block",
-  boxShadow: "0 8px 24px rgba(34, 197, 94, 0.35), 0 4px 8px rgba(0, 0, 0, 0.3)",
+  boxShadow: "0 8px 24px rgba(34, 197, 94, 0.35)",
   border: "none",
   letterSpacing: "0.5px",
 };
@@ -614,10 +679,10 @@ const ctaButton = {
  * CTA subtext
  */
 const ctaSubtext = {
-  fontSize: "15px",
-  fontWeight: "500",
+  fontSize: "16px",
   color: "#94a3b8",
   margin: "20px 0 0 0",
+  lineHeight: "1.5",
 };
 
 // ============================================
@@ -639,13 +704,12 @@ const statsSection = {
  */
 const statsHeading = {
   fontFamily: '"Orbitron", "Inter", sans-serif',
-  fontSize: "18px",
-  fontWeight: "700",
+  fontSize: "20px",
+  fontWeight: "800",
   color: "#f8fafc",
   textAlign: "center" as const,
   margin: "0 0 32px 0",
   letterSpacing: "1px",
-  textTransform: "uppercase" as const,
 };
 
 /**
@@ -700,7 +764,7 @@ const statLabel = {
  * Footer section container
  */
 const footerSection = {
-  padding: "32px 40px 40px 40px",
+  padding: "40px 40px 40px 40px",
   textAlign: "center" as const,
 };
 
@@ -710,7 +774,17 @@ const footerSection = {
 const footerDivider = {
   border: "none",
   borderTop: "1px solid rgba(148, 163, 184, 0.1)",
-  margin: "0 0 32px 0",
+  margin: "0 0 28px 0",
+};
+
+/**
+ * Footer title
+ */
+const footerTitle = {
+  fontSize: "20px",
+  fontWeight: "700",
+  color: "#f8fafc",
+  margin: "0 0 12px 0",
 };
 
 /**
@@ -719,8 +793,8 @@ const footerDivider = {
 const footerText = {
   color: "#94a3b8",
   fontSize: "16px",
-  fontWeight: "500",
-  margin: "0 0 12px 0",
+  margin: "0 0 16px 0",
+  lineHeight: "1.6",
 };
 
 /**
@@ -729,8 +803,18 @@ const footerText = {
 const footerLink = {
   color: "#22c55e",
   textDecoration: "none",
-  fontWeight: "600",
-  fontSize: "16px",
+  fontWeight: "700",
+  fontSize: "17px",
+};
+
+/**
+ * Social text
+ */
+const socialText = {
+  color: "#94a3b8",
+  fontSize: "15px",
+  margin: "20px 0 0 0",
+  lineHeight: "1.5",
 };
 
 /**
@@ -739,17 +823,6 @@ const footerLink = {
 const copyrightText = {
   color: "#64748b",
   fontSize: "14px",
-  fontWeight: "500",
-  margin: "24px 0 8px 0",
-};
-
-/**
- * University text
- */
-const universityText = {
-  color: "#64748b",
-  fontSize: "13px",
-  fontWeight: "500",
-  margin: "0",
-  fontStyle: "italic" as const,
+  margin: "24px 0 0 0",
+  lineHeight: "1.5",
 };
