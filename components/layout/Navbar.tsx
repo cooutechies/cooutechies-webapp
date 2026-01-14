@@ -7,14 +7,16 @@ import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@react-email/components";
 
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "About", href: "/#about", isHash: true },
   { name: "Vision", href: "/#vision", isHash: true },
+  { name: "Contact", href: "/#contact", isHash: true },
+  { name: "Events", href: "/events", isHash: false },
   { name: "Biography", href: "/biography", isHash: false },
   { name: "Join The Community", href: "/register" },
-  { name: "Contact", href: "/#contact", isHash: true },
 ];
 
 export default function Navbar() {
@@ -205,10 +207,13 @@ export default function Navbar() {
           </button>
 
           {/* CTA Button */}
-          <button className="relative overflow-hidden group bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg px-6 py-2.5 shadow-lg transition-all duration-300 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]">
+          <Button
+            href="/register"
+            className="relative overflow-hidden group bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg px-6 py-2.5 shadow-lg transition-all duration-300 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]"
+          >
             <span className="relative z-10">Join Us</span>
             <div className="absolute inset-0 bg-linear-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </button>
+          </Button>
         </motion.div>
 
         {/* Mobile Toggle & Theme */}

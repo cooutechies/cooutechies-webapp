@@ -43,6 +43,7 @@ const navItems: NavItem[] = [
   { href: "/admin/emails", label: "Emails", icon: Mail },
   { href: "/admin/automation", label: "Automation", icon: Zap },
   { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin/core-team", label: "CoreTeam", icon: Users },
 ];
 
 export function AdminSidebar() {

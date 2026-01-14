@@ -10,7 +10,7 @@ import {
   Code,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import HeroImageGallery from "@/components/sections/HeroImageGallery";
+import HeroImageGallery from "@/components/Biography/HeroImageGallery";
 import Link from "next/link";
 
 /**

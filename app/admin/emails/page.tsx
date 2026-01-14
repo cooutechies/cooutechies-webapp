@@ -5,28 +5,27 @@
  */
 
 import { getEmailHistory } from "@/app/actions/emails";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
-import { Plus, Mail, Send, Clock, Users, Sparkles } from "lucide-react";
+import { Plus, Mail, Send, Clock, Users } from "lucide-react";
 import Link from "next/link";
-import type { EmailLog } from "@/types/data.types";
 
 export default async function EmailsPage() {
   const result = await getEmailHistory(100);
-  const emails: EmailLog[] = result.success ? result.data || [] : [];
+  const emails = result.success ? result.data || [] : [];
 
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
       {/* Background effects matching dashboard */}
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-100 h-100 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header with glassmorphic effect */}
-      <div className="relative z-10 px-6 py-6 border-b border-border/50 sticky top-0 glass backdrop-blur-xl">
+      <div className=" z-10 px-6 py-6 border-b border-border/50 sticky top-0 glass backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20">
+            <div className="p-2 rounded-xl bg-linear-to-br from-primary/20 to-secondary/20">
               <Mail className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -40,7 +39,7 @@ export default async function EmailsPage() {
           </div>
           <Button
             asChild
-            className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity shadow-lg"
+            className="bg-linear-to-r from-primary to-secondary hover:opacity-90 transition-opacity shadow-lg"
           >
             <Link href="/admin/emails/broadcast">
               <Plus className="h-4 w-4 mr-2" />
@@ -56,7 +55,7 @@ export default async function EmailsPage() {
           {emails.length === 0 ? (
             <div className="glass rounded-2xl overflow-hidden border-glow">
               <div className="p-16 flex flex-col items-center justify-center">
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 mb-4">
+                <div className="p-4 rounded-2xl bg-linear-to-br from-primary/20 to-secondary/20 mb-4">
                   <Mail className="h-12 w-12 text-primary" />
                 </div>
                 <p className="text-foreground font-semibold text-lg mb-1">
@@ -67,7 +66,7 @@ export default async function EmailsPage() {
                 </p>
                 <Button
                   asChild
-                  className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
+                  className="bg-linear-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
                 >
                   <Link href="/admin/emails/broadcast">
                     <Send className="h-4 w-4 mr-2" />
@@ -78,9 +77,9 @@ export default async function EmailsPage() {
             </div>
           ) : (
             <div className="glass rounded-2xl overflow-hidden border-glow">
-              <div className="border-b border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 p-6">
+              <div className="border-b border-border/50 bg-linear-to-r from-primary/5 via-transparent to-secondary/5 p-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20">
+                  <div className="p-2 rounded-xl bg-linear-to-br from-primary/20 to-secondary/20">
                     <Send className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -96,14 +95,14 @@ export default async function EmailsPage() {
 
               <div className="p-6">
                 <div className="space-y-0">
-                  {emails.map((email, index) => (
+                  {emails.map((email) => (
                     <div
                       key={email._id.toString()}
                       className="flex items-start justify-between py-5 border-b border-border/30 last:border-0 group hover:bg-muted/30 -mx-4 px-4 rounded-lg transition-all duration-200"
                     >
                       <div className="flex items-start gap-4 flex-1 min-w-0">
                         {/* Icon */}
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:scale-110 transition-transform duration-200 flex-shrink-0 mt-0.5">
+                        <div className="p-2 rounded-xl bg-linear-to-br from-primary/10 to-secondary/10 group-hover:scale-110 transition-transform duration-200 shrink-0 mt-0.5">
                           <Mail className="h-4 w-4 text-primary" />
                         </div>
 

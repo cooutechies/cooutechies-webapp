@@ -6,8 +6,8 @@ import { useRef } from "react";
 import { Code2, Lightbulb, GraduationCap, Trophy } from "lucide-react";
 
 const stats = [
-  { label: "Active Members", value: "400+", icon: Code2 },
-  { label: "Projects Built", value: "100+", icon: Lightbulb },
+  { label: "Active Members", value: "500+", icon: Code2 },
+  { label: "Projects Built", value: "50+", icon: Lightbulb },
   { label: "Workshops Held", value: "30+", icon: GraduationCap },
   { label: "Hackathons Won", value: "1+", icon: Trophy },
 ];
@@ -42,7 +42,7 @@ export default function AboutSection() {
               </h3>
 
               <p className="text-muted-foreground leading-relaxed mb-6">
-                COOU Techies is the premier technology community at Chukwuemeka
+                COOU Techies is the Parent technology community at Chukwuemeka
                 Odumegwu Ojukwu University (COOU). We are a collective of
                 passionate students, developers, designers, and tech enthusiasts
                 united by our love for innovation and technology.

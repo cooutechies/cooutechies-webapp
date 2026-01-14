@@ -25,14 +25,14 @@ interface EmailResponse {
 }
 
 interface RegistrationDocument {
-  _id?: ObjectId;
+  _id: ObjectId;
   email: string;
   status: string;
   [key: string]: unknown;
 }
 
 interface EmailLogDocument {
-  _id?: ObjectId;
+  _id: ObjectId;
   eventId?: ObjectId;
   emailType: string;
   trigger: string;
@@ -46,7 +46,7 @@ interface EmailLogDocument {
 }
 
 interface ActivityLogDocument {
-  _id?: ObjectId;
+  _id: ObjectId;
   action: string;
   eventId?: ObjectId;
   details: string;

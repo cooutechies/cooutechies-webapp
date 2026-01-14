@@ -16,6 +16,11 @@ import { EventStatusBadge } from "@/components/eventPage/EventStatusBadge";
 import { getEventById } from "@/app/actions/events";
 import { isRegistrationOpen, formatDuration } from "@/lib/eventDurationUtils";
 import { Speaker } from "@/types/event.types";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/sections/Footer";
+import EventDetailSkeleton from "@/components/eventPage/EventDetailSkeleton";
+import EventDetailError from "@/components/eventPage/EventDetailError";
+import { Suspense } from "react";
 
 /**
  * Event Detail Page (Server Component)
@@ -33,15 +38,14 @@ interface EventPageProps {
   }>;
 }
 
-export default async function EventDetailPage({ params }: EventPageProps) {
-  const { id } = await params;
-
+// Separate the data fetching component
+async function EventContent({ id }: { id: string }) {
   // Fetch event data from database using server action
   const response = await getEventById(id);
 
-  // If event not found or error occurred, show 404
-  if (!response.success || !response.data) {
-    notFound();
+  // Handle error or missing data
+  if (!response?.data) {
+    return <EventDetailError error="Failed to load event data" />;
   }
 
   const { event, registrationCount } = response.data;
@@ -70,7 +74,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   const eventDateISO = eventDate.toISOString();
 
   return (
-    <main className="min-h-screen">
+    <>
       {/* Hero Section */}
       <section className="relative pt-28 pb-0 overflow-hidden">
         {/* Background effects */}
@@ -95,13 +99,12 @@ export default async function EventDetailPage({ params }: EventPageProps) {
             <div className="lg:col-span-3">
               <div className="relative h-100 md:h-125 rounded-3xl overflow-hidden border-glow">
                 <Image
-                  src={event.coverImage || "/placeholder.svg"}
+                  src={event.coverImage}
                   alt={event.title}
                   fill
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
               </div>
             </div>
 
@@ -259,6 +262,20 @@ export default async function EventDetailPage({ params }: EventPageProps) {
           </div>
         </div>
       </section>
+    </>
+  );
+}
+
+export default async function EventDetailPage({ params }: EventPageProps) {
+  const { id } = await params;
+
+  return (
+    <main className="min-h-screen">
+      <Navbar />
+      <Suspense fallback={<EventDetailSkeleton />}>
+        <EventContent id={id} />
+      </Suspense>
+      <Footer />
     </main>
   );
 }

@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 const slides = [
   {
@@ -246,7 +248,10 @@ export default function HeroCarousel() {
                 }}
                 className="flex flex-wrap gap-4"
               >
-                <button className="group relative overflow-hidden rounded-full bg-primary hover:bg-primary/90 px-8 py-3.5 text-base font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all duration-300 hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98]">
+                <Link
+                  href="/register"
+                  className="group relative overflow-hidden rounded-full bg-primary hover:bg-primary/90 px-8 py-3.5 text-base font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all duration-300 hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98] inline-flex items-center"
+                >
                   <span className="relative z-10 flex items-center gap-2">
                     Get Started
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -257,10 +262,13 @@ export default function HeroCarousel() {
                     whileHover={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                   />
-                </button>
-                <button className="group rounded-full border-2 border-white/40 bg-white/15 hover:bg-white/20 px-8 py-3.5 text-base font-bold text-white backdrop-blur-xl transition-all duration-300 hover:border-primary/60 hover:scale-[1.02] active:scale-[0.98]">
+                </Link>
+                <Link
+                  href="/biography"
+                  className="group rounded-full border-2 border-white/40 bg-white/15 hover:bg-white/20 px-8 py-3.5 text-base font-bold text-white backdrop-blur-xl transition-all duration-300 hover:border-primary/60 hover:scale-[1.02] active:scale-[0.98]"
+                >
                   <span className="relative z-10">Meet The Team</span>
-                </button>
+                </Link>
               </motion.div>
             </motion.div>
           </AnimatePresence>

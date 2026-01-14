@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Target, Eye, Compass } from "lucide-react";
+import { Target, Eye, Compass, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function VisionSection() {
   const ref = useRef(null);
@@ -113,15 +114,13 @@ export default function VisionSection() {
           <p className="text-muted-foreground mb-4">
             Ready to be part of something extraordinary?
           </p>
-          <a
-            href="#contact"
+          <Link
+            href="/register"
             className="inline-flex items-center gap-2 text-primary font-semibold hover:text-secondary transition-colors"
           >
             Join our community
-            <span className="group-hover:translate-x-1 transition-transform">
-              →
-            </span>
-          </a>
+            <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </motion.div>
       </div>
     </section>
