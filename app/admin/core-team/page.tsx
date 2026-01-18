@@ -14,8 +14,8 @@ import { Suspense } from "react";
 import CoreTeamSkeleton from "@/components/admin/core-team/core-team-skeleton";
 
 export const metadata = {
-  title: "Core Team | Admin Dashboard",
-  description: "Manage core team members",
+  title: "Core Team",
+  description: "Manage core team members and leadership",
 };
 
 async function CoreTeamContent() {

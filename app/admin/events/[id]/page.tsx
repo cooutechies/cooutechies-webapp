@@ -18,6 +18,26 @@ interface Params {
   id: string;
 }
 
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const result = await getEventById(id);
+
+  return {
+    title:
+      result.success && result.data ? result.data.event.title : "Event Details",
+    description:
+      result.success && result.data
+        ? result.data.event.description
+        : "View event information",
+  };
+}
+
 export default async function EventDetailPage({
   params,
 }: {

@@ -38,6 +38,29 @@ interface EventPageProps {
   }>;
 }
 
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: EventPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const response = await getEventById(id);
+
+  if (!response?.data) {
+    return {
+      title: "Event Not Found",
+      description: "The requested event could not be found",
+    };
+  }
+
+  const { event } = response.data;
+
+  return {
+    title: event.title,
+    description: event.description,
+  };
+}
+
 // Separate the data fetching component
 async function EventContent({ id }: { id: string }) {
   // Fetch event data from database using server action

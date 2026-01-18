@@ -9,8 +9,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export const metadata = {
-  title: "Add Core Team Member | Admin Dashboard",
-  description: "Add a new core team member",
+  title: "Add Team Member",
+  description: "Create a new core team member profile",
 };
 
 export default function AddCoreTeamPage() {

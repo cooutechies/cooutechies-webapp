@@ -5,6 +5,11 @@
 
 import { EmailBuilder } from "@/components/admin/email-builder/email-builder";
 
+export const metadata = {
+  title: "Send Broadcast",
+  description: "Send email broadcasts to community members",
+};
+
 export default function BroadcastEmailPage() {
   return (
     <div className="flex flex-col h-full relative overflow-hidden">

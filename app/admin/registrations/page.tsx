@@ -8,6 +8,11 @@ import { Users } from "lucide-react";
 import { RegistrationsClient } from "@/components/admin/registrations/RegistrationsClient";
 import { AllRegistrationsPageSkeleton } from "@/components/admin/registrations/AllRegistrationsFallbacks";
 
+export const metadata = {
+  title: "Registrations",
+  description: "Manage community member registrations",
+};
+
 export default function RegistrationsPage() {
   return (
     <div className="flex flex-col h-full relative overflow-hidden">

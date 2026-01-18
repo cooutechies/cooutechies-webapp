@@ -23,6 +23,11 @@ interface EventWithCount extends SerializedEvent {
   registrationCount?: number;
 }
 
+export const metadata = {
+  title: "Events",
+  description: "Manage events and registrations",
+};
+
 export default async function EventsPage() {
   const result = await getEvents(1, 50);
   const events: EventWithCount[] = result.success

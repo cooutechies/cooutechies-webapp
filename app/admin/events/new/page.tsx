@@ -3,6 +3,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles } from "lucide-react";
 
+export const metadata = {
+  title: "Create Event",
+  description: "Add a new event to the calendar",
+};
+
 export default function NewEventPage() {
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
