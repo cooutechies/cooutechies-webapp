@@ -5,6 +5,25 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import CoreTeamError from "@/components/admin/core-team/core-team-error";
 
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const { id } = await params;
+  const response = await getCoreTeamMemberById(id);
+
+  return {
+    title:
+      response.success && response.data
+        ? `Edit ${response.data.name}`
+        : "Edit Team Member",
+    description: "Update team member profile information",
+  };
+}
+
 export default async function EditCoreTeamPage({
   params,
 }: {

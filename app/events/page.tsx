@@ -12,8 +12,13 @@ import Footer from "@/components/sections/Footer";
  * Implements modern loading and error handling patterns
  * Uses Suspense for streaming content and inline errors
  *
- * Route: /events
  */
+
+export const metadata = {
+  title: "Events",
+  description:
+    "Join us for exciting tech events, workshops, and networking opportunities",
+};
 
 export default function EventsPage() {
   return (

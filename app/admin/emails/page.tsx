@@ -10,6 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Plus, Mail, Send, Clock, Users } from "lucide-react";
 import Link from "next/link";
 
+export const metadata = {
+  title: "Emails",
+  description: "Manage and track email communications",
+};
+
 export default async function EmailsPage() {
   const result = await getEmailHistory(100);
   const emails = result.success ? result.data || [] : [];

@@ -18,6 +18,25 @@ interface PageProps {
   };
 }
 
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const { id } = await params;
+  const result = await getEventById(id);
+
+  return {
+    title:
+      result.success && result.data
+        ? `Edit ${result.data.event.title}`
+        : "Edit Event",
+    description: "Update event information and details",
+  };
+}
+
 export default async function EditEventPage({ params }: PageProps) {
   const { id } = await params;
 
