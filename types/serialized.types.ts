@@ -115,3 +115,12 @@ export interface PaginatedRegistrationsResponse {
   pages: number;
   currentPage: number;
 }
+
+// In your serialized.types.ts file, add:
+
+export interface PaginatedEventRegistrationsResponse {
+  registrations: SerializedEventRegistration[];
+  total: number;
+  pages: number;
+  currentPage: number;
+}

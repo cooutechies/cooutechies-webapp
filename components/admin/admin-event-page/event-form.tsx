@@ -74,7 +74,7 @@ const eventFormSchema = z.object({
     .optional()
     .refine(
       (val) => !val || (!isNaN(Number(val)) && Number(val) > 0),
-      "Maximum attendees must be a positive number"
+      "Maximum attendees must be a positive number",
     ),
   duration: z.string().min(1, "Duration is required"),
 });
@@ -82,7 +82,7 @@ const eventFormSchema = z.object({
 const speakerSchema = z.object({
   name: z.string().min(1, "Speaker name is required"),
   title: z.string().min(1, "Speaker title is required"),
-  bio: z.string().optional().default(""),
+  bio: z.string(),
   image: z.string(),
 });
 
@@ -118,7 +118,7 @@ export function EventForm({ event, mode = "create" }: UnifiedEventFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>(
-    event?.coverImage || ""
+    event?.coverImage || "",
   );
   const [isDragging, setIsDragging] = useState(false);
   const [speakers, setSpeakers] = useState<Speaker[]>(() =>
@@ -130,11 +130,11 @@ export function EventForm({ event, mode = "create" }: UnifiedEventFormProps) {
           bio: s.bio || "",
           image: s.photo || DEFAULT_SPEAKER_IMAGE,
         }))
-      : []
+      : [],
   );
   const [editingSpeaker, setEditingSpeaker] = useState<Speaker | null>(null);
   const [speakerImagePreview, setSpeakerImagePreview] = useState<string>(
-    DEFAULT_SPEAKER_IMAGE
+    DEFAULT_SPEAKER_IMAGE,
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const speakerImageInputRef = useRef<HTMLInputElement>(null);
@@ -263,7 +263,7 @@ export function EventForm({ event, mode = "create" }: UnifiedEventFormProps) {
   const onSpeakerSubmit = (values: SpeakerValues) => {
     if (editingSpeaker && speakers.find((s) => s.id === editingSpeaker.id)) {
       const updatedSpeakers = speakers.map((s) =>
-        s.id === editingSpeaker.id ? { ...s, ...values } : s
+        s.id === editingSpeaker.id ? { ...s, ...values } : s,
       );
       setSpeakers(updatedSpeakers);
       toast.success("Speaker updated successfully");
@@ -388,7 +388,7 @@ export function EventForm({ event, mode = "create" }: UnifiedEventFormProps) {
         toast.success(
           mode === "edit"
             ? "Event updated successfully"
-            : "Event created successfully"
+            : "Event created successfully",
         );
         if (mode === "create") {
           router.push("/admin/events");
@@ -898,8 +898,8 @@ export function EventForm({ event, mode = "create" }: UnifiedEventFormProps) {
                     ? "Updating Event..."
                     : "Creating Event..."
                   : mode === "edit"
-                  ? "Update Event"
-                  : "Create Event"}
+                    ? "Update Event"
+                    : "Create Event"}
               </Button>
             </div>
           </form>

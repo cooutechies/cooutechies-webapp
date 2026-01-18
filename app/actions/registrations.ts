@@ -18,6 +18,7 @@ import z from "zod";
 import { Resend } from "resend";
 import EventConfirmationEmail from "@/components/email-templates/EventConfirmationEmail";
 import type {
+  PaginatedEventRegistrationsResponse,
   PaginatedRegistrationsResponse,
   SerializedCommunityRegistration,
 } from "@/types/serialized.types";
@@ -183,8 +184,8 @@ export async function getEventRegistrations(
   eventId: string,
   page = 1,
   limit = 20,
-): Promise<ApiResponse<PaginatedRegistrationsResponse>> {
-  const authError = await requireAuth<PaginatedRegistrationsResponse>();
+): Promise<ApiResponse<PaginatedEventRegistrationsResponse>> {
+  const authError = await requireAuth<PaginatedEventRegistrationsResponse>();
   if (authError) return authError;
 
   try {

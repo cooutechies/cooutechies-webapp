@@ -14,13 +14,13 @@ import { EventsInlineError } from "./EventsErrorFallback";
  */
 
 interface EventWithCount {
-  _id: ObjectId;
+  _id: string; // Changed from ObjectId
   title: string;
   description: string;
-  date: Date;
+  date: string; // Changed from Date
   location: string;
   coverImage: string;
-  duration: string;
+  duration?: string;
   maxAttendees?: number;
   registrationCount?: number;
 }
@@ -89,10 +89,7 @@ export async function EventsContent() {
                     _id: event._id.toString(),
                     title: event.title,
                     description: event.description,
-                    date:
-                      event.date instanceof Date
-                        ? event.date.toISOString()
-                        : event.date,
+                    date: event.date ? event.date : event.date,
                     location: event.location,
                     coverImage: event.coverImage,
                     maxAttendees: event.maxAttendees ?? null,
@@ -144,10 +141,7 @@ export async function EventsContent() {
                     _id: event._id.toString(),
                     title: event.title,
                     description: event.description,
-                    date:
-                      event.date instanceof Date
-                        ? event.date.toISOString()
-                        : event.date,
+                    date: event.date ? event.date : event.date,
                     location: event.location,
                     coverImage: event.coverImage,
                     maxAttendees: event.maxAttendees ?? null,
