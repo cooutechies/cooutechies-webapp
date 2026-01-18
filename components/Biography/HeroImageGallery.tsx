@@ -1,32 +1,26 @@
 "use client";
 
 import type React from "react";
-
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
-
-// Image array - replace with your actual image paths
-const images = [
-  "/event-1.jpeg",
-  "/event-3.jpeg",
-  "/event-2.jpeg",
-  "/event-3.jpeg",
-];
+import { useCoreTeamMembers } from "@/hooks/tanstack-query/use-core-team";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HeroImageGallery() {
+  const { data, isLoading, error } = useCoreTeamMembers();
+  const images = data?.members?.map((member) => member.profileImage) ?? [];
+
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Auto-rotation effect - changes active image every 4 seconds
   useEffect(() => {
+    if (images.length === 0) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % images.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [images.length]);
 
-  // Memoized animation variants for better performance
-  // Prevents recreating variant objects on every render
   const decorativeVariants = useMemo(
     () => ({
       cornerTopLeft: {
@@ -55,7 +49,6 @@ export default function HeroImageGallery() {
     []
   );
 
-  // Memoized transition settings
   const transitions = useMemo(
     () => ({
       decorative: {
@@ -83,12 +76,10 @@ export default function HeroImageGallery() {
     []
   );
 
-  // Handler for clicking on images - updates active index
   const handleImageClick = (index: number) => {
     setActiveIndex(index);
   };
 
-  // Handler for indicator dots - prevents event bubbling
   const handleIndicatorClick = (
     e: React.MouseEvent<HTMLButtonElement>,
     index: number
@@ -97,9 +88,60 @@ export default function HeroImageGallery() {
     setActiveIndex(index);
   };
 
+  if (isLoading) {
+    return (
+      <div className="relative w-full h-112.5 md:h-137.5 lg:h-150 overflow-hidden flex items-center justify-center">
+        <div className="absolute -top-6 -left-6 w-32 h-32 rounded-3xl opacity-15 border border-primary" />
+        <div className="absolute -bottom-6 -right-6 w-28 h-28 rounded-full opacity-20 border border-secondary" />
+        <Skeleton className="w-70 h-70 md:w-95 md:h-95 lg:w-105 lg:h-105 rounded-3xl" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="relative w-full h-112.5 md:h-137.5 lg:h-150 overflow-hidden flex items-center justify-center px-4">
+        <div className="absolute -top-6 -left-6 w-32 h-32 rounded-3xl opacity-15 border border-primary" />
+        <div className="absolute -bottom-6 -right-6 w-28 h-28 rounded-full opacity-20 border border-secondary" />
+        <div className="relative z-20 text-center">
+          <div className="w-70 h-70 md:w-95 md:h-95 lg:w-105 lg:h-105 rounded-3xl bg-destructive/10 border border-destructive/30 flex items-center justify-center">
+            <div>
+              <p className="text-sm text-destructive font-medium">
+                Failed to load images
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {error.message || "Something went wrong"}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!error && images.length === 0) {
+    return (
+      <div className="relative w-full h-112.5 md:h-137.5 lg:h-150 overflow-hidden flex items-center justify-center px-4">
+        <div className="absolute -top-6 -left-6 w-32 h-32 rounded-3xl opacity-15 border border-primary" />
+        <div className="absolute -bottom-6 -right-6 w-28 h-28 rounded-full opacity-20 border border-secondary" />
+        <div className="relative z-20 text-center">
+          <div className="w-70 h-70 md:w-95 md:h-95 lg:w-105 lg:h-105 rounded-3xl bg-secondary/10 border border-secondary/30 flex items-center justify-center">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                No images available
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Please check back later
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full h-112.5 md:h-137.5 lg:h-150 overflow-hidden">
-      {/* Decorative corner elements with animated gradients */}
       <motion.div
         className="absolute -top-6 -left-6 w-32 h-32 rounded-3xl"
         style={{
@@ -123,7 +165,6 @@ export default function HeroImageGallery() {
         transition={transitions.decorativeSlow}
       />
 
-      {/* Ambient background glow effects for depth */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full blur-3xl pointer-events-none"
         style={{
@@ -139,11 +180,9 @@ export default function HeroImageGallery() {
         }}
       />
 
-      {/* Main gallery container - uses flex for centering */}
       <div className="relative w-full h-full flex items-center justify-center px-4">
         <AnimatePresence mode="sync">
           {images.map((image, index) => {
-            // Calculate position relative to active index
             const isActive = index === activeIndex;
             const isPrev =
               index === (activeIndex - 1 + images.length) % images.length;
@@ -152,8 +191,6 @@ export default function HeroImageGallery() {
               index === (activeIndex - 2 + images.length) % images.length;
             const isFarNext = index === (activeIndex + 2) % images.length;
 
-            // Enhanced positioning system for carousel effect
-            // Using transform (x, y, scale, rotate) for GPU acceleration
             let xOffset = 0;
             let yOffset = 0;
             let scale = 0.5;
@@ -163,7 +200,6 @@ export default function HeroImageGallery() {
             let blur = 4;
 
             if (isActive) {
-              // Center position - main focus
               xOffset = 0;
               yOffset = 0;
               scale = 1;
@@ -172,7 +208,6 @@ export default function HeroImageGallery() {
               rotation = 0;
               blur = 0;
             } else if (isPrev) {
-              // Left adjacent position
               xOffset = -200;
               yOffset = 20;
               scale = 0.8;
@@ -181,7 +216,6 @@ export default function HeroImageGallery() {
               rotation = -6;
               blur = 0;
             } else if (isNext) {
-              // Right adjacent position
               xOffset = 200;
               yOffset = 20;
               scale = 0.8;
@@ -190,7 +224,6 @@ export default function HeroImageGallery() {
               rotation = 6;
               blur = 0;
             } else if (isFarPrev) {
-              // Far left position - partially visible
               xOffset = -340;
               yOffset = 40;
               scale = 0.65;
@@ -199,7 +232,6 @@ export default function HeroImageGallery() {
               rotation = -10;
               blur = 2;
             } else if (isFarNext) {
-              // Far right position - partially visible
               xOffset = 340;
               yOffset = 40;
               scale = 0.65;
@@ -214,7 +246,6 @@ export default function HeroImageGallery() {
                 key={index}
                 className="absolute cursor-pointer"
                 initial={false}
-                // Use GPU-accelerated properties for smooth performance
                 animate={{
                   x: xOffset,
                   y: yOffset,
@@ -249,10 +280,8 @@ export default function HeroImageGallery() {
                       : "0 10px 30px -10px rgba(0, 0, 0, 0.3)",
                   }}
                 >
-                  {/* Enhanced animated glow border for active image */}
                   {isActive && (
                     <>
-                      {/* Gradient border with pulsing animation */}
                       <motion.div
                         className="absolute -inset-0.5 rounded-3xl z-0"
                         style={{
@@ -264,7 +293,6 @@ export default function HeroImageGallery() {
                         }}
                         transition={transitions.glow}
                       />
-                      {/* Outer glow effect */}
                       <div
                         className="absolute -inset-4 rounded-3xl opacity-40 blur-xl"
                         style={{
@@ -275,7 +303,6 @@ export default function HeroImageGallery() {
                     </>
                   )}
 
-                  {/* Image container - positioned above glow effects */}
                   <div className="relative w-full h-full z-10">
                     <Image
                       src={image || "/placeholder.svg"}
@@ -286,7 +313,6 @@ export default function HeroImageGallery() {
                       sizes="(max-width: 768px) 200px, (max-width: 1024px) 260px, 300px"
                     />
 
-                    {/* Modern gradient overlay for text readability */}
                     <div
                       className="absolute inset-0"
                       style={{
@@ -296,7 +322,6 @@ export default function HeroImageGallery() {
                       }}
                     />
 
-                    {/* Subtle shine effect on hover */}
                     {isActive && (
                       <motion.div
                         className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
@@ -309,7 +334,6 @@ export default function HeroImageGallery() {
                     )}
                   </div>
 
-                  {/* Enhanced glassmorphic indicator dots */}
                   {isActive && (
                     <motion.div
                       className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2.5 z-20 px-4 py-2 rounded-full"
@@ -354,7 +378,6 @@ export default function HeroImageGallery() {
         </AnimatePresence>
       </div>
 
-      {/* Floating accent shapes with enhanced styling */}
       <motion.div
         className="absolute -top-10 right-1/4 w-16 h-16 rounded-2xl backdrop-blur-sm pointer-events-none"
         style={{
@@ -385,7 +408,6 @@ export default function HeroImageGallery() {
         }}
       />
 
-      {/* Additional floating element */}
       <motion.div
         className="absolute top-1/4 -left-8 w-12 h-12 rounded-xl backdrop-blur-sm pointer-events-none"
         style={{

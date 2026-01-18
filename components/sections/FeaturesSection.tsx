@@ -13,6 +13,7 @@ import {
   BookOpen,
   Network,
 } from "lucide-react";
+import Link from "next/link";
 
 const features = [
   {
@@ -169,13 +170,13 @@ export default function FeaturesSection() {
                 Join 500+ students already learning with us.
               </p>
             </div>
-            <a
-              href="#contact"
+            <Link
+              href="/register"
               className="inline-flex items-center justify-center gap-2 bg-linear-to-r from-primary to-secondary text-primary-foreground font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
             >
               Become a Member
               <Rocket className="w-4 h-4" />
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

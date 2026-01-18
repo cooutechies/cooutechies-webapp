@@ -8,8 +8,6 @@ import {
   Linkedin,
   Instagram,
   ArrowUp,
-  Sparkles,
-  // Github,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -18,7 +16,12 @@ import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 
 const socialLinks = [
-  { icon: Twitter, href: "#", label: "Twitter", color: "hover:bg-[#1DA1F2]" },
+  {
+    icon: Twitter,
+    href: "https://x.com/@cooutechies",
+    label: "Twitter",
+    color: "hover:bg-[#1DA1F2]",
+  },
   {
     icon: Instagram,
     href: "#",
@@ -27,14 +30,16 @@ const socialLinks = [
       "hover:bg-gradient-to-br hover:from-[#f58529] hover:via-[#dd2a7b] hover:to-[#8134af]",
   },
   { icon: Linkedin, href: "#", label: "LinkedIn", color: "hover:bg-[#0077B5]" },
-  // { icon: Github, href: "#", label: "GitHub", color: "hover:bg-foreground" },
 ];
 
 const quickLinks = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
-  { name: "Events", href: "#" },
-  { name: "Projects", href: "#" },
+  { name: "Vision", href: "/#vision" },
+  { name: "Contact", href: "/#contact" },
+  { name: "Events", href: "/events" },
+  { name: "Biography", href: "/biography" },
+  { name: "Join The Community", href: "/register" },
 ];
 
 function scrollToTop() {
@@ -64,20 +69,9 @@ export default function Footer() {
   }
 
   return (
-    <footer id="contact" className="relative pt-32 pb-8 overflow-hidden">
-      {/* Animated Background with spotlight effects */}
-      <div className="absolute inset-0 bg-linear-to-b from-background via-muted/30 to-background" />
-
-      {/* Radial spotlights */}
-      <div className="absolute top-0 left-1/4 w-125 h-125 bg-primary/20 rounded-full blur-[120px] animate-pulse-glow" />
-      <div
-        className="absolute top-1/4 right-1/4 w-100 h-100 bg-secondary/15 rounded-full blur-[100px] animate-pulse-glow"
-        style={{ animationDelay: "1s" }}
-      />
-      <div
-        className="absolute bottom-1/3 left-1/2 w-150 h-150 bg-accent/10 rounded-full blur-[140px] animate-pulse-glow"
-        style={{ animationDelay: "2s" }}
-      />
+    <footer id="footer" className="relative pt-20 pb-8 overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-linear-to-b from-muted/30 via-background to-background" />
 
       {/* Circuit pattern overlay */}
       <div className="absolute inset-0 circuit-pattern opacity-40" />
@@ -85,7 +79,7 @@ export default function Footer() {
       {/* Top gradient line with glow */}
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_20px_rgba(34,197,94,0.5)]" />
 
-      {/* Floating orbs - Enhanced with color spotlights */}
+      {/* Floating orbs */}
       <motion.div
         animate={{
           x: [0, 60, 0],
@@ -104,85 +98,8 @@ export default function Footer() {
         transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-20 left-20 h-96 w-96 rounded-full bg-linear-to-tr from-secondary/20 via-primary/10 to-transparent blur-[140px]"
       />
-      <motion.div
-        animate={{
-          x: [0, 40, 0],
-          y: [0, -30, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/2 left-1/2 h-72 w-72 rounded-full bg-linear-to-br from-accent/15 via-secondary/10 to-transparent blur-[100px]"
-      />
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="relative group"
-        >
-          <div className="absolute inset-0 bg-linear-to-r from-primary/20 to-secondary/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-          <div className="relative glass border border-border/50 rounded-3xl p-8 md:p-12 mb-20 text-center overflow-hidden shadow-2xl">
-            {/* Animated corner accents with glow */}
-            <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-primary/60 rounded-tl-3xl shadow-[0_0_30px_rgba(34,197,94,0.3)]" />
-            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-secondary/60 rounded-br-3xl shadow-[0_0_30px_rgba(234,179,8,0.3)]" />
-
-            {/* Animated accent dots */}
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="absolute top-4 left-4 w-3 h-3 rounded-full bg-primary shadow-[0_0_20px_rgba(34,197,94,0.6)]"
-            />
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
-              className="absolute bottom-4 right-4 w-3 h-3 rounded-full bg-secondary shadow-[0_0_20px_rgba(234,179,8,0.6)]"
-            />
-
-            <motion.div
-              initial={{ scale: 0.9 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-6 shadow-[0_0_20px_rgba(34,197,94,0.2)]">
-                <Sparkles className="h-4 w-4 animate-pulse" />
-                Join Our Community
-              </div>
-
-              <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 tracking-tight">
-                Ready to{" "}
-                <span className="text-gradient animate-shimmer bg-size-[200%_100%]">
-                  Level Up?
-                </span>
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
-                Join COOU Techies today and become part of a community
-                that&apos;s shaping the future of technology in Nigeria.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  size="lg"
-                  className="group relative overflow-hidden bg-linear-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-xl px-8 py-6 shadow-[0_0_30px_rgba(34,197,94,0.3)] hover:shadow-[0_0_50px_rgba(34,197,94,0.5)] hover:scale-105 transition-all duration-300"
-                >
-                  <span className="relative z-10">Join the Community</span>
-                  <div className="absolute inset-0 bg-linear-to-r from-secondary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-primary/50 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] rounded-xl px-8 py-6 font-semibold transition-all duration-300 hover:scale-105"
-                >
-                  Contact Us
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
@@ -292,17 +209,17 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3 text-muted-foreground group">
                 <Mail className="w-5 h-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
-                <a
-                  href="mailto:hello@cooutechies.com"
+                <Link
+                  href="mailto:cooutechies@gmail.com?subject=Community%20Enquiries&body=Hello%20Team%2C%0AI%E2%80%99m%20reaching%20out%20regarding%20a%20question%20%2F%20sponsorship%20%2F%20general%20enquiry%20about%20the%20community.%0APlease%20find%20the%20details%20below%3A%0A%0AName%3A%0AEmail%3A%0AMessage%3A%0A%0AThank%20you."
                   className="hover:text-primary transition-colors text-sm"
                 >
-                  hello@cooutechies.com
-                </a>
+                  contact@cooutechies.com
+                </Link>
               </li>
-              <li className="flex items-center gap-3 text-muted-foreground group">
+              {/* <li className="flex items-center gap-3 text-muted-foreground group">
                 <Phone className="w-5 h-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
                 <span className="text-sm">+234 XXX XXX XXXX</span>
-              </li>
+              </li> */}
             </ul>
           </motion.div>
         </div>
@@ -316,8 +233,15 @@ export default function Footer() {
             className="text-sm text-muted-foreground text-center md:text-left"
           >
             © {currentYear} COOU Techies. All rights reserved. Built with{" "}
-            <span className="text-primary animate-pulse">💚</span> by the
-            community
+            <span className="text-primary animate-pulse">💚</span> by{" "}
+            <a
+              href="https://legend4tech.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline"
+            >
+              legend4tech
+            </a>
           </motion.p>
 
           <motion.div

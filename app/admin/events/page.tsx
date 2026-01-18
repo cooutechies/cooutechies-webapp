@@ -17,9 +17,9 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { formatDuration } from "@/lib/eventDurationUtils";
-import { Event } from "@/types/event.types";
+import { SerializedEvent } from "@/types/serialized.types";
 
-interface EventWithCount extends Event {
+interface EventWithCount extends SerializedEvent {
   registrationCount?: number;
 }
 

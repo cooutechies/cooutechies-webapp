@@ -1,3 +1,5 @@
+"use client";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, MapPin, Users, Clock } from "lucide-react";
@@ -65,13 +67,24 @@ export function EventCard({
         href={`/events/${event._id}`}
         className="block relative h-56 overflow-hidden"
       >
-        <Image
-          src={event.coverImage || "/placeholder.svg"}
-          alt={event.title}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.06 }}
+          transition={{
+            duration: 0.9,
+            ease: [0.22, 1, 0.36, 1], // real smooth easing
+          }}
+        >
+          <Image
+            src={event.coverImage || "/placeholder.svg"}
+            alt={event.title}
+            fill
+            className="object-cover"
+          />
+        </motion.div>
+
+        {/* <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" /> */}
 
         {/* Past Event Badge */}
         {isPast && (

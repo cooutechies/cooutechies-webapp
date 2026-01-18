@@ -4,6 +4,7 @@ import AboutSection from "@/components/sections/AboutSection";
 import VisionSection from "@/components/sections/VisionSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
 import Footer from "@/components/sections/Footer";
+import CTASection from "@/components/sections/CTASection";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <AboutSection />
         <VisionSection />
         <FeaturesSection />
+        <CTASection />
         <Footer />
       </main>
     </div>

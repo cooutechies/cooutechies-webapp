@@ -22,7 +22,7 @@ export function EventSpeakerCard({ speaker }: SpeakerCardProps) {
     <div className="glass rounded-2xl p-6 group hover:border-primary/30 transition-all duration-500">
       <div className="flex items-start gap-4">
         {/* Speaker Photo */}
-        <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 border-2 border-border group-hover:border-primary/50 transition-colors">
+        <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 border-border group-hover:border-primary/50 transition-colors">
           <Image
             src={speaker.photo || "/placeholder.svg"}
             alt={speaker.name}

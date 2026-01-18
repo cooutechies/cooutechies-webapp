@@ -1,8 +1,6 @@
 /**
- * Registration Server Actions
- * Handles two types of registrations:
- * 1. Community Registrations - Students joining the community
- * 2. Event Registrations - Students registering for specific events
+ * Registration Server Actions (Updated with Serialization and Auth)
+ * All return types properly serialized for client consumption
  */
 
 "use server";
@@ -19,36 +17,45 @@ import { ObjectId } from "mongodb";
 import z from "zod";
 import { Resend } from "resend";
 import EventConfirmationEmail from "@/components/email-templates/EventConfirmationEmail";
+import type {
+  PaginatedEventRegistrationsResponse,
+  PaginatedRegistrationsResponse,
+  SerializedCommunityRegistration,
+} from "@/types/serialized.types";
+import { requireAuth } from "@/lib/auth-helper";
+import type { ApiResponse } from "@/types/data.types";
+
+// Collection names from environment
+const REGISTRATIONS_COLLECTION = process.env.REGISTRATIONS_COLLECTION!;
+const EVENT_REGISTRATIONS_COLLECTION =
+  process.env.EVENT_REGISTRATIONS_COLLECTION!;
 
 interface RegistrationResponseData {
   registrationId: string;
 }
 
-interface ActionResponse {
-  success: boolean;
-  message?: string;
-  data?: RegistrationResponseData;
-  error?: string;
+export interface PaginatedCommunityRegistrationsResponse {
+  registrations: SerializedCommunityRegistration[];
+  total: number;
+  pages: number;
+  currentPage: number;
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL as string;
 
 /**
- * Submit a new community registration (student joining the community)
- * Added submitRegistration function for community registrations
+ * Submit a new community registration (Public endpoint - no auth required)
  */
 export async function submitRegistration(
-  formData: RegistrationFormData
-): Promise<ActionResponse> {
+  formData: RegistrationFormData,
+): Promise<ApiResponse<RegistrationResponseData>> {
   try {
-    // Validate input using registrationSchema
     const validatedData = registrationSchema.parse(formData);
 
     const { db } = await connectToDatabase();
-    const registrationsCollection = db.collection("registrations");
+    const registrationsCollection = db.collection(REGISTRATIONS_COLLECTION);
 
-    // Check if email already exists
     const existingRegistration = await registrationsCollection.findOne({
       email: validatedData.email.toLowerCase(),
     });
@@ -61,7 +68,6 @@ export async function submitRegistration(
       };
     }
 
-    // Create registration document
     const registration = {
       _id: new ObjectId(),
       ...validatedData,
@@ -69,10 +75,8 @@ export async function submitRegistration(
       status: "registered",
     };
 
-    // Insert into database
     const result = await registrationsCollection.insertOne(registration);
 
-    // Send confirmation email
     try {
       await sendConfirmationEmail({
         firstName: validatedData.firstName,
@@ -80,7 +84,6 @@ export async function submitRegistration(
       });
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
-      // Continue even if email fails - registration was successful
     }
 
     return {
@@ -110,82 +113,94 @@ export async function submitRegistration(
 }
 
 /**
- * Get all community registrations (students joining the community)
- * @param page - Page number (default: 1)
- * @param limit - Items per page (default: 20, set to 0 for all)
+ * Get all community registrations with serialization (Admin only)
  */
-export async function getCommunityRegistrations(page = 1, limit = 20) {
+export async function getCommunityRegistrations(
+  page = 1,
+  limit = 20,
+): Promise<ApiResponse<PaginatedCommunityRegistrationsResponse>> {
+  const authError =
+    await requireAuth<PaginatedCommunityRegistrationsResponse>();
+  if (authError) return authError;
+
   try {
     const { db } = await connectToDatabase();
-    const registrationsCollection = db.collection("registrations");
+    const registrationsCollection = db.collection(REGISTRATIONS_COLLECTION);
 
-    // If limit is 0, fetch all registrations
-    if (limit === 0) {
-      const [registrations, total] = await Promise.all([
-        registrationsCollection.find({}).sort({ registeredAt: -1 }).toArray(),
-        registrationsCollection.countDocuments({}),
-      ]);
-
-      return {
-        success: true,
-        data: {
-          registrations,
-          total,
-          pages: 1,
-          currentPage: 1,
-        },
-      };
-    }
-
-    // Standard pagination
-    const skip = (page - 1) * limit;
+    const query = {};
+    const skip = limit > 0 ? (page - 1) * limit : 0;
 
     const [registrations, total] = await Promise.all([
       registrationsCollection
-        .find({})
-        .sort({ registeredAt: -1 })
+        .find(query)
+        .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit)
+        .limit(limit > 0 ? limit : 0)
         .toArray(),
-      registrationsCollection.countDocuments({}),
+      registrationsCollection.countDocuments(query),
     ]);
+
+    // Serialize registrations according to SerializedCommunityRegistration
+    const serialized = registrations.map((reg) => ({
+      _id: reg._id.toString(),
+      firstName: reg.firstName,
+      lastName: reg.lastName,
+      email: reg.email,
+      department: reg.department,
+      level: reg.level,
+      techSkills: reg.techSkills,
+      aspiringSkills: reg.aspiringSkills,
+      reason: reg.reason,
+      campus: reg.campus,
+      school: reg.school,
+      createdAt: reg.createdAt.toISOString(),
+      status: reg.status,
+    }));
 
     return {
       success: true,
+      message: "Community registrations fetched successfully",
       data: {
-        registrations,
+        registrations: serialized,
         total,
-        pages: Math.ceil(total / limit),
-        currentPage: page,
+        pages: limit > 0 ? Math.ceil(total / limit) : 1,
+        currentPage: limit > 0 ? page : 1,
       },
     };
   } catch (error) {
     console.error("[Registrations] Fetch failed:", error);
     return {
       success: false,
+      message: "Failed to fetch community registrations",
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 /**
- * Get registrations for a specific event
+ * Get registrations for a specific event with serialization (Admin only)
  */
 export async function getEventRegistrations(
   eventId: string,
   page = 1,
-  limit = 20
-) {
+  limit = 20,
+): Promise<ApiResponse<PaginatedEventRegistrationsResponse>> {
+  const authError = await requireAuth<PaginatedEventRegistrationsResponse>();
+  if (authError) return authError;
+
   try {
     if (!ObjectId.isValid(eventId)) {
       return {
         success: false,
+        message: "Invalid event ID",
         error: "Invalid event ID",
       };
     }
 
     const { db } = await connectToDatabase();
-    const eventRegistrationsCollection = db.collection("eventRegistrations");
+    const eventRegistrationsCollection = db.collection(
+      EVENT_REGISTRATIONS_COLLECTION,
+    );
 
     const skip = (page - 1) * limit;
 
@@ -201,10 +216,22 @@ export async function getEventRegistrations(
       }),
     ]);
 
+    // Serialize registrations
+    const serialized = registrations.map((reg) => ({
+      _id: reg._id.toString(),
+      firstName: reg.firstName,
+      lastName: reg.lastName,
+      email: reg.email,
+      eventId: reg.eventId.toString(),
+      registeredAt: reg.registeredAt.toISOString(),
+      status: reg.status,
+    }));
+
     return {
       success: true,
+      message: "Event registrations fetched successfully",
       data: {
-        registrations,
+        registrations: serialized,
         total,
         pages: Math.ceil(total / limit),
         currentPage: page,
@@ -214,14 +241,14 @@ export async function getEventRegistrations(
     console.error("[Event Registrations] Fetch failed:", error);
     return {
       success: false,
+      message: "Failed to fetch event registrations",
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 /**
- * Submit event registration using the pattern from submitRegistration
- * Register a student for a specific event with validation and confirmation email
+ * Submit event registration (Public endpoint - no auth required)
  */
 export async function submitEventRegistration(
   formData: EventRegistrationData & {
@@ -230,10 +257,8 @@ export async function submitEventRegistration(
     eventTime: string;
     eventLocation: string;
     eventDescription?: string;
-  }
-): Promise<ActionResponse> {
-  console.log(FormData);
-
+  },
+): Promise<ApiResponse<RegistrationResponseData>> {
   try {
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     if (!RESEND_API_KEY) {
@@ -245,14 +270,16 @@ export async function submitEventRegistration(
     if (!ObjectId.isValid(validatedData.eventId)) {
       return {
         success: false,
+        message: "Invalid event ID",
         error: "Invalid event ID",
       };
     }
 
     const { db } = await connectToDatabase();
-    const eventRegistrationsCollection = db.collection("eventRegistrations");
+    const eventRegistrationsCollection = db.collection(
+      EVENT_REGISTRATIONS_COLLECTION,
+    );
 
-    // Check if email already registered for this event
     const existingRegistration = await eventRegistrationsCollection.findOne({
       email: validatedData.email.toLowerCase(),
       eventId: new ObjectId(validatedData.eventId),
@@ -276,10 +303,8 @@ export async function submitEventRegistration(
       status: "registered",
     };
 
-    // Insert into eventRegistrations collection
     const result = await eventRegistrationsCollection.insertOne(registration);
 
-    // Send event-specific confirmation email using Resend directly
     try {
       const response = await resend.emails.send({
         from: FROM_EMAIL,
@@ -300,7 +325,6 @@ export async function submitEventRegistration(
       }
     } catch (emailError) {
       console.error("Event confirmation email sending failed:", emailError);
-      // Continue even if email fails - registration was successful
     }
 
     return {
