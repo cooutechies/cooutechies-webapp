@@ -21,9 +21,8 @@ export const registrationSchema = z.object({
   level: z.string().min(1, "Please select your level"),
   techSkills: z
     .string()
-    .max(500, "Tech skills must be at most 500 characters")
-    .optional()
-    .or(z.literal("")),
+    .min(5, "Please enter your technical skills")
+    .max(500, "Tech skills must be at most 500 characters"),
   aspiringSkills: z
     .string()
     .max(500, "Aspiring skills must be at most 500 characters")
