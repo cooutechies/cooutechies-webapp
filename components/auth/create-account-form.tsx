@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,8 @@ import {
   ArrowRight,
   Shield,
   Loader2,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -51,6 +53,7 @@ const itemVariants = {
 export default function CreateAccountPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<RegisterPayload>({
     resolver: zodResolver(createAccountSchema),
@@ -99,7 +102,7 @@ export default function CreateAccountPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5" />
+      <div className="absolute inset-0 bg-linear-to-br from-background via-background to-primary/5" />
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       <div className="absolute top-1/4 -left-32 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 -right-32 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
@@ -170,6 +173,7 @@ export default function CreateAccountPage() {
               />
 
               {/* Password Field */}
+              {/* Password Field */}
               <FormField
                 control={form.control}
                 name="password"
@@ -182,20 +186,31 @@ export default function CreateAccountPage() {
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
-                          autoComplete="new-password"
+                          autoComplete="current-password"
                           disabled={isPending}
-                          className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 transition-all"
+                          className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 transition-all"
                           {...field}
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                          tabIndex={-1}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
               {/* Admin Token Field */}
               <FormField
                 control={form.control}

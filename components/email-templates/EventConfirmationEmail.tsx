@@ -59,12 +59,11 @@ export default function EventConfirmationEmail({
   // ============================================
   // Environment Configuration
   // ============================================
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
   const whatsappChannelLink = process.env.NEXT_PUBLIC_WHATSAPP_CHANNEL;
 
   // Logo URL - ensure this matches your actual logo path
-  const logoUrl = `${baseUrl}/cooutechies-logo1`;
-
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const logoUrl = `${baseUrl}/email-logo.png`;
   // Dynamic year
   const currentYear = new Date().getFullYear();
 

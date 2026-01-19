@@ -36,7 +36,7 @@ export default function EventReminderEmail({
   eventLink,
 }: EventReminderEmailProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
-  const logoUrl = `${baseUrl}/cooutechies-logo1`;
+  const logoUrl = `${baseUrl}/email-logo.png`;
   const currentYear = new Date().getFullYear();
 
   const getReminderMessage = () => {

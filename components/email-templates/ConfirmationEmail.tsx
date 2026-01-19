@@ -54,7 +54,7 @@ export default function ConfirmationEmail({
   const whatsappChannelLink = process.env.NEXT_PUBLIC_WHATSAPP_CHANNEL;
 
   // Logo URL - ensure this matches your actual logo path
-  const logoUrl = `${baseUrl}/cooutechies-logo1`;
+  const logoUrl = `${baseUrl}/email-logo.png`;
 
   // Dynamic year
   const currentYear = new Date().getFullYear();
@@ -129,8 +129,7 @@ export default function ConfirmationEmail({
 
               {/* Subheading */}
               <Text style={heroSubtitle}>
-                You&apos;re officially part of the most vibrant tech
-                community 
+                You&apos;re officially part of the most vibrant tech community
               </Text>
             </Section>
 
@@ -384,7 +383,9 @@ const headerSection = {
 const logoStyle = {
   display: "block",
   margin: "0 auto 24px auto",
-  borderRadius: "16px",
+  width: "180px",
+  height: "auto",
+  borderRadius: "12px",
   boxShadow: "0 0 40px rgba(34, 197, 94, 0.3), 0 4px 20px rgba(0, 0, 0, 0.4)",
   border: "2px solid rgba(34, 197, 94, 0.3)",
 };
