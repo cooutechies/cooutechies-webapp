@@ -433,7 +433,8 @@ export default function Register() {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-foreground font-bold text-base">
-                                  Technical Skills (Optional)
+                                  Technical Skills{" "}
+                                  <span className="text-destructive">*</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Textarea
