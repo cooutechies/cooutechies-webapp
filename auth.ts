@@ -12,7 +12,7 @@ import { verifyPassword } from "@/lib/crypto";
 import type { AuthJWT, AuthSession, ExtendedUser } from "@/types/auth.types";
 
 const SEVEN_DAYS_IN_SECONDS = 7 * 24 * 60 * 60;
-const ADMIN_COLLECTION_NAME = process.env.ADMIN_COLLECTION_NAME!;
+const ADMIN_COLLECTION = process.env.ADMIN_COLLECTION!;
 
 /**
  * Auth.js v5 Configuration
@@ -33,7 +33,7 @@ const authConfig: NextAuthConfig = {
 
         try {
           const { db } = await connectToDatabase();
-          const adminCollection = db.collection(ADMIN_COLLECTION_NAME);
+          const adminCollection = db.collection(ADMIN_COLLECTION);
 
           // Query admin user from MongoDB
           const user = await adminCollection.findOne({
@@ -47,13 +47,17 @@ const authConfig: NextAuthConfig = {
 
           const isPasswordValid = await verifyPassword(
             credentials.password as string,
-            user.password
+            user.password,
           );
+
+          console.log("[Auth Debug] Input password:", credentials.password);
+          console.log("[Auth Debug] Stored hash:", user.password);
+          console.log("[Auth Debug] Password valid:", isPasswordValid);
 
           if (!isPasswordValid) {
             console.error(
               "[Auth] Invalid password for admin:",
-              credentials.email
+              credentials.email,
             );
             throw new Error("Invalid credentials");
           }
@@ -65,7 +69,7 @@ const authConfig: NextAuthConfig = {
           // Update last login timestamp
           await adminCollection.updateOne(
             { _id: user._id },
-            { $set: { lastLogin: new Date() } }
+            { $set: { lastLogin: new Date() } },
           );
 
           // Return user object matching ExtendedUser type

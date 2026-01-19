@@ -2,6 +2,10 @@ import CreateAccount from "@/components/auth/create-account-form";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/sections/Footer";
 
+export const metadata = {
+  title: "Create Admin Account",
+};
+
 function page() {
   return (
     <main>

@@ -294,11 +294,9 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
   return (
     <main className="min-h-screen">
-      <Navbar />
       <Suspense fallback={<EventDetailSkeleton />}>
         <EventContent id={id} />
       </Suspense>
-      <Footer />
     </main>
   );
 }

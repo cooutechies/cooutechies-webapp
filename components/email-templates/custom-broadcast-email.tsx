@@ -22,8 +22,10 @@ export default function CustomBroadcastEmail({
   htmlContent = "<p>Your email content will appear here...</p>",
 }: CustomBroadcastEmailProps) {
   const currentYear = new Date().getFullYear();
-  const logoUrl =
-    "https://cooutechies-webapp-storage.s3.eu-north-1.amazonaws.com/events/d174ebd5-fdfd-40e3-8a88-980b0721489e.jpg";
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  const logoUrl = `${baseUrl}/email-logo.png`;
 
   return (
     <Html lang="en">
