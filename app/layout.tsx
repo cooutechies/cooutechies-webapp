@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/providers/tanstack-query-provider";
+import { ScrollProvider } from "@/components/layout/ScrollContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +42,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <ScrollProvider>{children}</ScrollProvider>
             <Toaster richColors position="top-right" />
           </ThemeProvider>
         </QueryProvider>

@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
 import { Code2, Lightbulb, GraduationCap, Trophy } from "lucide-react";
+import { useScrollSection } from "../layout/ScrollContext";
 
 const stats = [
   { label: "Active Members", value: "500+", icon: Code2 },
@@ -13,16 +13,16 @@ const stats = [
 ];
 
 export default function AboutSection() {
-  const ref = useRef(null);
+  const ref = useScrollSection("about");
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="about" className="relative py-24 lg:py-32 overflow-hidden">
+    <section ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 circuit-pattern opacity-30" />
       <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
 
-      <div className="container mx-auto px-4" ref={ref}>
+      <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left - Visual */}
           <motion.div

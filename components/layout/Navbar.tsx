@@ -4,18 +4,18 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@react-email/components";
+import { useScroll } from "./ScrollContext";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "About", href: "/#about", isHash: true },
-  { name: "Vision", href: "/#vision", isHash: true },
-  { name: "Contact", href: "/#contact", isHash: true },
-  { name: "Events", href: "/events", isHash: false },
-  { name: "Biography", href: "/biography", isHash: false },
+  { name: "About", href: "/#about", sectionId: "about" },
+  { name: "Vision", href: "/#vision", sectionId: "vision" },
+  { name: "Contact", href: "/#contact", sectionId: "contact" },
+  { name: "Events", href: "/events" },
+  { name: "Biography", href: "/biography" },
   { name: "Join The Community", href: "/register" },
 ];
 
@@ -25,6 +25,8 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
 
   const pathname = usePathname();
+  const router = useRouter();
+  const { scrollToSection } = useScroll();
   const isHomePage = pathname === "/";
 
   const { setTheme, resolvedTheme } = useTheme();
@@ -44,10 +46,27 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (href: string, isHash: boolean) => {
-    if (isHash) {
-      const id = href.replace("/#", "");
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  const handleNavClick = (
+    e: React.MouseEvent,
+    href: string,
+    sectionId?: string,
+  ) => {
+    if (sectionId) {
+      e.preventDefault();
+
+      if (isHomePage) {
+        // Already on home page, just scroll to section
+        scrollToSection(sectionId);
+      } else {
+        // Navigate to home page with hash
+        router.push(`/#${sectionId}`);
+      }
+
+      // Close mobile menu if open
+      setIsMobileOpen(false);
+    } else {
+      // For non-hash links, close mobile menu
+      setIsMobileOpen(false);
     }
   };
 
@@ -135,12 +154,7 @@ export default function Navbar() {
             >
               <Link
                 href={link.href}
-                onClick={(e) => {
-                  if (link.isHash) {
-                    e.preventDefault();
-                    handleNavClick(link.href, link.isHash);
-                  }
-                }}
+                onClick={(e) => handleNavClick(e, link.href, link.sectionId)}
                 className={`relative px-4 py-2.5 text-sm font-bold transition-all duration-300 group inline-block rounded-lg ${
                   isScrolled || !isHomePage
                     ? "text-foreground hover:text-primary hover:bg-primary/10"
@@ -207,13 +221,13 @@ export default function Navbar() {
           </button>
 
           {/* CTA Button */}
-          <Button
+          <Link
             href="/register"
-            className="relative overflow-hidden group bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg px-6 py-2.5 shadow-lg transition-all duration-300 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]"
+            className="relative overflow-hidden group bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg px-6 py-2.5 shadow-lg transition-all duration-300 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center"
           >
             <span className="relative z-10">Join Us</span>
             <div className="absolute inset-0 bg-linear-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </Button>
+          </Link>
         </motion.div>
 
         {/* Mobile Toggle & Theme */}
@@ -317,13 +331,9 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    onClick={(e) => {
-                      if (link.isHash) {
-                        e.preventDefault();
-                        handleNavClick(link.href, link.isHash);
-                      }
-                      setIsMobileOpen(false);
-                    }}
+                    onClick={(e) =>
+                      handleNavClick(e, link.href, link.sectionId)
+                    }
                     className="block px-4 py-3 text-foreground font-bold hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                   >
                     {link.name}
@@ -335,12 +345,14 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                <Button
+                <Link
                   href="/register"
-                  className="mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg py-3 shadow-lg transition-all hover:scale-[1.02]"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg py-3.5 shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center relative overflow-hidden group"
                 >
-                  Join Us
-                </Button>
+                  <span className="relative z-10">Join Us</span>
+                  <div className="absolute inset-0 bg-linear-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Link>
               </motion.div>
             </nav>
           </motion.div>
