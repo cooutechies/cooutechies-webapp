@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
 import { Target, Eye, Compass, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useScrollSection } from "../layout/ScrollContext";
 
 export default function VisionSection() {
-  const ref = useRef(null);
+  const ref = useScrollSection("vision");
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const cards = [
@@ -35,7 +35,7 @@ export default function VisionSection() {
   ];
 
   return (
-    <section id="vision" className="relative py-24 lg:py-32 overflow-hidden">
+    <section ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-linear-to-b from-background via-muted/20 to-background" />
       <div className="absolute inset-0 grid-pattern opacity-30" />
@@ -43,7 +43,7 @@ export default function VisionSection() {
       {/* Glowing Orb */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-primary/10 rounded-full blur-3xl" />
 
-      <div className="container mx-auto px-4 relative z-10" ref={ref}>
+      <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}

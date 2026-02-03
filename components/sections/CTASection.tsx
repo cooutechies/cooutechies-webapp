@@ -3,10 +3,13 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useScrollSection } from "../layout/ScrollContext";
 
 export default function CTASection() {
+  const ref = useScrollSection("contact");
+
   return (
-    <section id="contact" className="relative py-32 overflow-hidden">
+    <section ref={ref} className="relative py-32 overflow-hidden">
       {/* Animated Background with spotlight effects */}
       <div className="absolute inset-0 bg-linear-to-b from-background via-muted/30 to-background" />
 

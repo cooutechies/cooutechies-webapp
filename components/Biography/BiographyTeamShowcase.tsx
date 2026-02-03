@@ -1,7 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Target, Users, Github, Linkedin, Twitter, Mail } from "lucide-react";
+import {
+  Target,
+  Users,
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  Instagram,
+} from "lucide-react";
 import {
   EmptyState,
   ErrorFallback,
@@ -156,33 +164,30 @@ function FounderSection() {
                   <div className="flex gap-4">
                     {[
                       {
-                        icon: Github,
-                        href: "#",
-                        color:
-                          "hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]",
-                      },
-                      {
-                        icon: Linkedin,
-                        href: "#",
-                        color:
-                          "hover:border-ring hover:text-ring hover:shadow-[0_0_20px_hsl(var(--ring)/0.3)]",
-                      },
-                      {
                         icon: Twitter,
-                        href: "#",
+                        href: "https://x.com/paulalfred_",
                         color:
                           "hover:border-secondary hover:text-secondary hover:shadow-[0_0_20px_hsl(var(--secondary)/0.3)]",
                       },
+
                       {
-                        icon: Mail,
-                        href: "#",
+                        icon: Linkedin,
+                        href: "https://www.linkedin.com/in/paul-alfred-9b2a7923a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
                         color:
-                          "hover:border-accent hover:text-accent hover:shadow-[0_0_20px_hsl(var(--accent)/0.3)]",
+                          "hover:border-ring hover:text-ring hover:shadow-[0_0_20px_hsl(var(--ring)/0.3)]",
+                      },
+
+                      {
+                        icon: Instagram,
+                        href: "https://www.instagram.com/paul_alfredz?igsh=aXRwOWRrbndsZ2c1&utm_source=qr",
+                        color:
+                          "hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]",
                       },
                     ].map((social, index) => (
                       <motion.a
                         key={index}
                         href={social.href}
+                        target="_blank"
                         whileHover={{ scale: 1.15, y: -3 }}
                         whileTap={{ scale: 0.95 }}
                         className={`w-12 h-12 rounded-xl border border-border bg-card/50 backdrop-blur-sm flex items-center justify-center text-muted-foreground transition-all duration-300 ${social.color}`}

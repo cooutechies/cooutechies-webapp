@@ -42,6 +42,7 @@ export default function HeroCarousel() {
   const { resolvedTheme } = useTheme();
   const theme = resolvedTheme || "light";
 
+  // Auto-play functionality - advances slide every 5 seconds
   useEffect(() => {
     if (!isAutoPlaying) return;
 
@@ -53,49 +54,58 @@ export default function HeroCarousel() {
     return () => clearInterval(timer);
   }, [isAutoPlaying]);
 
+  // Navigate to previous or next slide
   const navigate = useCallback((dir: number) => {
     setDirection(dir);
     setCurrentSlide((prev) => (prev + dir + slides.length) % slides.length);
     setIsAutoPlaying(false);
+    // Resume autoplay after 10 seconds of inactivity
     setTimeout(() => setIsAutoPlaying(true), 10000);
   }, []);
 
+  // Jump directly to a specific slide
   const goToSlide = useCallback(
     (index: number) => {
       setDirection(index > currentSlide ? 1 : -1);
       setCurrentSlide(index);
       setIsAutoPlaying(false);
+      // Resume autoplay after 10 seconds of inactivity
       setTimeout(() => setIsAutoPlaying(true), 10000);
     },
-    [currentSlide]
+    [currentSlide],
   );
 
   const slide = slides[currentSlide];
 
-  // Slide animation variants
+  /**
+   * Animation Variants
+   * These control how elements enter, display, and exit the screen
+   */
+
+  // Slide transition - smooth fade effect
   const slideVariants = {
     enter: { opacity: 0 },
     center: { zIndex: 1, opacity: 1 },
     exit: { zIndex: 0, opacity: 0 },
   };
 
-  // Text animation variants
+  // Text animations - smooth vertical slide with fade
   const textVariants = {
-    enter: { opacity: 0, y: 30 },
+    enter: { opacity: 0, y: 20 },
     center: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -30 },
+    exit: { opacity: 0, y: -20 },
   };
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Base layer - prevents flash, adapts to theme */}
+      {/* Base background layer - prevents white flash on theme change */}
       <div
         className={`absolute inset-0 z-0 transition-colors duration-500 ${
           theme === "dark" ? "bg-black" : "bg-background"
         }`}
       />
 
-      {/* Background Images Stack */}
+      {/* Background Images with Overlays */}
       <div className="absolute inset-0">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
@@ -106,39 +116,39 @@ export default function HeroCarousel() {
             animate="center"
             exit="exit"
             transition={{
-              duration: 1,
-              ease: [0.43, 0.13, 0.23, 0.96],
+              opacity: { duration: 0.8, ease: "easeInOut" },
             }}
             className="absolute inset-0"
           >
-            {/* Image Layer */}
+            {/* Background Image - subtle zoom effect on transition */}
             <motion.div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{
                 backgroundImage: `url(${slide.image})`,
               }}
-              initial={{ scale: 1.1 }}
+              initial={{ scale: 1.05 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 1.05 }}
+              exit={{ scale: 1.02 }}
               transition={{
-                duration: 1,
-                ease: [0.43, 0.13, 0.23, 0.96],
+                duration: 0.8,
+                ease: "easeOut",
               }}
             />
 
-            {/* Overlay - Lighter to show more image */}
+            {/* Gradient overlays for better text readability */}
             <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/70 to-black/50" />
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-black/40" />
             <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60" />
 
-            {/* Vignette - Moderate */}
+            {/* Vignette effect for depth */}
             <div className="absolute inset-0 shadow-[inset_0_0_120px_rgba(0,0,0,0.6)]" />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Subtle animated glow orbs */}
+      {/* Animated ambient glow effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10 opacity-50">
+        {/* Primary glow orb - top left */}
         <motion.div
           animate={{
             x: [0, 100, 0],
@@ -153,6 +163,7 @@ export default function HeroCarousel() {
           }}
           className="absolute -top-32 -left-32 h-80 w-80 rounded-full bg-primary blur-[140px]"
         />
+        {/* Secondary glow orb - bottom right */}
         <motion.div
           animate={{
             x: [0, -80, 0],
@@ -169,7 +180,7 @@ export default function HeroCarousel() {
         />
       </div>
 
-      {/* Main Content */}
+      {/* Main Content Container */}
       <div className="relative z-20 flex h-full items-start pt-32 pb-24 md:items-center md:pt-20">
         <div className="container mx-auto px-6 lg:px-12">
           <AnimatePresence mode="wait" custom={direction}>
@@ -181,13 +192,13 @@ export default function HeroCarousel() {
               exit="exit"
               className="max-w-4xl"
             >
-              {/* Badge */}
+              {/* Subtitle Badge */}
               <motion.div
                 variants={textVariants}
                 transition={{
-                  duration: 0.5,
+                  duration: 0.6,
                   delay: 0.1,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="mb-4"
               >
@@ -197,13 +208,13 @@ export default function HeroCarousel() {
                 </span>
               </motion.div>
 
-              {/* Title */}
+              {/* Main Title */}
               <motion.h1
                 variants={textVariants}
                 transition={{
-                  duration: 0.5,
+                  duration: 0.6,
                   delay: 0.2,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="mb-4 text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl leading-[1.15]"
               >
@@ -225,29 +236,30 @@ export default function HeroCarousel() {
                 )}
               </motion.h1>
 
-              {/* Description */}
+              {/* Description Text */}
               <motion.p
                 variants={textVariants}
                 transition={{
-                  duration: 0.5,
+                  duration: 0.6,
                   delay: 0.3,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="mb-6 max-w-2xl text-base text-white/90 sm:text-lg leading-relaxed font-medium drop-shadow-md"
               >
                 {slide.description}
               </motion.p>
 
-              {/* CTA Buttons */}
+              {/* Call-to-Action Buttons */}
               <motion.div
                 variants={textVariants}
                 transition={{
-                  duration: 0.5,
+                  duration: 0.6,
                   delay: 0.4,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="flex flex-wrap gap-4"
               >
+                {/* Primary CTA Button */}
                 <Link
                   href="/register"
                   className="group relative overflow-hidden rounded-full bg-primary hover:bg-primary/90 px-8 py-3.5 text-base font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all duration-300 hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98] inline-flex items-center"
@@ -256,6 +268,7 @@ export default function HeroCarousel() {
                     Get Started
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
+                  {/* Animated gradient overlay on hover */}
                   <motion.div
                     className="absolute inset-0 bg-linear-to-r from-primary to-secondary"
                     initial={{ opacity: 0 }}
@@ -263,6 +276,8 @@ export default function HeroCarousel() {
                     transition={{ duration: 0.3 }}
                   />
                 </Link>
+
+                {/* Secondary CTA Button */}
                 <Link
                   href="/biography"
                   className="group rounded-full border-2 border-white/40 bg-white/15 hover:bg-white/20 px-8 py-3.5 text-base font-bold text-white backdrop-blur-xl transition-all duration-300 hover:border-primary/60 hover:scale-[1.02] active:scale-[0.98]"
@@ -275,8 +290,9 @@ export default function HeroCarousel() {
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrow Buttons */}
       <div className="absolute inset-y-0 left-4 right-4 z-30 flex items-center justify-between pointer-events-none sm:left-8 sm:right-8">
+        {/* Previous Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -284,8 +300,10 @@ export default function HeroCarousel() {
           className="pointer-events-auto group flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-xl transition-all duration-300 hover:border-primary/50 hover:bg-black/60"
           aria-label="Previous slide"
         >
-          <ChevronLeft className="h-5 w-5 text-white" />
+          <ChevronLeft className="h-5 w-5 text-white transition-transform group-hover:-translate-x-0.5" />
         </motion.button>
+
+        {/* Next Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -293,11 +311,11 @@ export default function HeroCarousel() {
           className="pointer-events-auto group flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-xl transition-all duration-300 hover:border-primary/50 hover:bg-black/60"
           aria-label="Next slide"
         >
-          <ChevronRight className="h-5 w-5 text-white" />
+          <ChevronRight className="h-5 w-5 text-white transition-transform group-hover:translate-x-0.5" />
         </motion.button>
       </div>
 
-      {/* Slide Indicators */}
+      {/* Slide Indicator Dots */}
       <div className="absolute bottom-12 left-1/2 z-30 flex -translate-x-1/2 gap-3">
         {slides.map((_, index) => (
           <motion.button
@@ -315,6 +333,7 @@ export default function HeroCarousel() {
             }}
             aria-label={`Go to slide ${index + 1}`}
           >
+            {/* Active indicator with smooth animation */}
             {index === currentSlide && (
               <motion.div
                 layoutId="activeIndicator"
@@ -326,7 +345,7 @@ export default function HeroCarousel() {
         ))}
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Down Indicator */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -348,17 +367,6 @@ export default function HeroCarousel() {
           <div className="h-16 w-px bg-linear-to-b from-white/50 via-white/20 to-transparent" />
         </motion.div>
       </motion.div>
-
-      {/* Progress bar for autoplay */}
-      {isAutoPlaying && (
-        <motion.div
-          className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-primary to-secondary z-40 origin-left shadow-lg shadow-primary/30"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 5, ease: "linear" }}
-          key={currentSlide}
-        />
-      )}
     </section>
   );
 }

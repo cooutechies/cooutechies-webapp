@@ -215,7 +215,7 @@ export default function Register() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-4xl mt-6">
           <Link href="/">
             <motion.div
               className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
@@ -433,8 +433,7 @@ export default function Register() {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-foreground font-bold text-base">
-                                  Technical Skills{" "}
-                                  <span className="text-destructive">*</span>
+                                  Technical Skills (Optional)
                                 </FormLabel>
                                 <FormControl>
                                   <Textarea
