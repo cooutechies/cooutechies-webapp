@@ -73,7 +73,7 @@ export default function AboutSection() {
             </motion.div>
           </motion.div>
 
-          {/* Right - Stats */}
+          {/* Right -- Stats */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
