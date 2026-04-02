@@ -4,15 +4,10 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EventsContent } from "@/components/eventPage/EventsContent";
 import { EventsLoadingSkeleton } from "@/components/eventPage/EventsLoadingSkeleton";
+import { HeroStats } from "@/components/eventPage/HeroStats";
+import { HeroStatsSkeleton } from "@/components/eventPage/HeroStats";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/sections/Footer";
-
-/**
- * Events Listing Page (Server Component)
- * Implements modern loading and error handling patterns
- * Uses Suspense for streaming content and inline errors
- *
- */
 
 export const metadata = {
   title: "Events",
@@ -24,19 +19,29 @@ export default function EventsPage() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      {/* Hero Section - Always visible */}
-      <section className="relative pt-28 pb-16 md:pt-32 md:pb-20 overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 grid-pattern opacity-30" />
-        <div className="absolute top-1/4 left-0 w-125 h-125 bg-primary/10 rounded-full blur-[120px] -translate-x-1/2" />
-        <div className="absolute bottom-0 right-0 w-100 h-100 bg-secondary/10 rounded-full blur-[100px] translate-x-1/2" />
+
+      {/* ── Hero — renders immediately, no data dependency ── */}
+      <section className="relative pt-28 pb-20 md:pt-36 md:pb-24 overflow-hidden bg-background border-b border-border/50">
+        {/* Dot-grid */}
+        <div
+          className="absolute inset-0 opacity-40 pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, hsl(var(--primary)/0.2) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent)",
+            maskImage:
+              "radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent)",
+          }}
+        />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[280px] bg-primary/8 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
-          {/* Back button */}
           <Button
             asChild
             variant="ghost"
-            className="mb-8 group hover:bg-primary/10"
+            className="mb-10 -ml-2 group text-muted-foreground hover:text-foreground"
           >
             <Link href="/">
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
@@ -44,30 +49,52 @@ export default function EventsPage() {
             </Link>
           </Button>
 
-          {/* Page Header */}
-          <div className="text-center max-w-3xl mx-auto">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 mb-6">
-              <Calendar className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">
-                Community Events
+          <div className="grid md:grid-cols-2 gap-10 items-end">
+            {/* Left — heading, no data needed */}
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/25 bg-primary/8 mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <Calendar className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[10px] font-semibold text-primary tracking-widest uppercase">
+                  Community Events
+                </span>
               </span>
+              <h1 className="font-display font-bold leading-[0.92] tracking-tight">
+                <span className="text-5xl md:text-6xl lg:text-7xl text-gradient block">
+                  Upcoming
+                </span>
+                <span className="text-5xl md:text-6xl lg:text-7xl text-foreground block">
+                  Events &amp;
+                </span>
+                <span className="text-5xl md:text-6xl lg:text-7xl text-foreground/20 block">
+                  Workshops
+                </span>
+              </h1>
+            </div>
+
+            {/* Right — stat grid streams in, skeleton shown while loading */}
+            <div className="pb-1">
+              <Suspense fallback={<HeroStatsSkeleton />}>
+                <HeroStats />
+              </Suspense>
+              <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4 mt-6">
+                Expand your skills, connect with fellow techies, and be part of
+                something bigger — every month, right here at COOU.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 mt-10">
+            <div className="h-px w-12 bg-gradient-to-r from-transparent to-border/60" />
+            <span className="text-[9px] text-muted-foreground/50 tracking-widest uppercase font-medium">
+              Explore below
             </span>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 leading-tight">
-              <span className="text-gradient">Upcoming Events</span>
-              <br />
-              <span className="text-foreground">& Workshops</span>
-            </h1>
-
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              Join us for exciting tech events, workshops, and networking
-              opportunities. Expand your skills and connect with fellow techies!
-            </p>
+            <div className="h-px w-12 bg-gradient-to-l from-transparent to-border/60" />
           </div>
         </div>
       </section>
 
-      {/* Events Content with Suspense */}
+      {/* ── Events content streams in below the hero ── */}
       <Suspense fallback={<EventsLoadingSkeleton />}>
         <EventsContent />
       </Suspense>
