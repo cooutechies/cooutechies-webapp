@@ -14,6 +14,7 @@ import { RegistrationForm } from "@/components/eventPage/RegistrationForm";
 import { EventStatusBadge } from "@/components/eventPage/EventStatusBadge";
 import { getEventById } from "@/app/actions/events";
 import { isRegistrationOpen, formatDuration } from "@/lib/eventDurationUtils";
+import { getImageUrl } from "@/lib/utils";
 import { Speaker } from "@/types/event.types";
 
 import EventDetailSkeleton from "@/components/eventPage/EventDetailSkeleton";
@@ -116,7 +117,7 @@ async function EventContent({ id }: { id: string }) {
             <div className="lg:col-span-3">
               <div className="relative h-100 md:h-125 rounded-3xl overflow-hidden border-glow">
                 <Image
-                  src={event.coverImage}
+                  src={getImageUrl(event.coverImage)}
                   alt={event.title}
                   fill
                   className="object-cover"

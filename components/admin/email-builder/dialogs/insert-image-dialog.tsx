@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { uploadFileToS3 } from "@/lib/uploadFileToS3";
+import { uploadFile } from "@/lib/uploadFile";
 import { toast } from "sonner";
 import Image from "next/image";
 
@@ -80,8 +80,9 @@ export function InsertImageDialog({
 
     setUploading(true);
     try {
-      const s3Url = await uploadFileToS3(selectedFile);
-      setUploadedUrl(s3Url);
+      // Upload to Cloudinary
+      const uploadedData = await uploadFile(selectedFile, undefined, "cooutechies/emails");
+      setUploadedUrl(uploadedData.url);
       toast.success("Image uploaded successfully!");
     } catch (error) {
       console.error("Upload error:", error);

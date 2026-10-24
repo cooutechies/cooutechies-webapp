@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Calendar, MapPin, Users, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isEventOngoing, formatDuration } from "@/lib/eventDurationUtils";
+import { getImageUrl } from "@/lib/utils";
 
 /**
  * EventCard Component
@@ -24,7 +25,7 @@ interface EventCardProps {
     description: string;
     date: string; // ISO date string
     location: string;
-    coverImage: string;
+    coverImage: string | { url?: string; publicId?: string } | null | undefined;
     maxAttendees: number | null;
     duration?: string; // Event duration (e.g., "1 day", "2 weeks")
   };
@@ -77,7 +78,7 @@ export function EventCard({
           }}
         >
           <Image
-            src={event.coverImage || "/placeholder.svg"}
+            src={getImageUrl(event.coverImage) || "/placeholder.svg"}
             alt={event.title}
             fill
             className="object-cover"

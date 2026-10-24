@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getImageUrl } from "@/lib/utils";
 
 /**
  * SpeakerCard Component
@@ -10,7 +11,7 @@ import Image from "next/image";
 
 interface SpeakerCardProps {
   speaker: {
-    photo?: string;
+    photo?: string | { url?: string; publicId?: string } | null;
     name: string;
     role: string;
     bio?: string | undefined;
@@ -24,7 +25,7 @@ export function EventSpeakerCard({ speaker }: SpeakerCardProps) {
         {/* Speaker Photo */}
         <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 border-border group-hover:border-primary/50 transition-colors">
           <Image
-            src={speaker.photo || "/placeholder.svg"}
+            src={getImageUrl(speaker.photo) || "/placeholder.svg"}
             alt={speaker.name}
             fill
             className="object-cover"

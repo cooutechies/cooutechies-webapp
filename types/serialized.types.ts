@@ -8,11 +8,13 @@
 // EVENT TYPES
 // ============================================================================
 
+import type { ImageObject } from "./event.types";
+
 export interface SerializedSpeaker {
   name: string;
   role: string;
   bio?: string;
-  photo?: string;
+  photo?: string | ImageObject;
 }
 
 export interface SerializedEvent {
@@ -21,7 +23,7 @@ export interface SerializedEvent {
   description: string;
   date: string;
   location: string;
-  coverImage: string;
+  coverImage: string | ImageObject;
   duration?: string;
   speakers?: SerializedSpeaker[];
   maxAttendees?: number;

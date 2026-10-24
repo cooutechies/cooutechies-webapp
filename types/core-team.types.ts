@@ -12,13 +12,18 @@ export interface SocialLinks {
   linkedin?: string;
 }
 
+export interface ImageObject {
+  url: string;
+  publicId: string;
+}
+
 // Database model with ObjectId (used server-side only)
 export interface CoreTeamMemberDB {
   _id: ObjectId;
   name: string;
   role: string;
   about: string;
-  profileImage: string;
+  profileImage: string | ImageObject;
   socialLinks: SocialLinks;
   createdAt: Date;
   updatedAt: Date;
@@ -30,7 +35,7 @@ export interface CoreTeamMember {
   name: string;
   role: string;
   about: string;
-  profileImage: string;
+  profileImage: string | ImageObject;
   socialLinks: SocialLinks;
   createdAt: string;
   updatedAt: string;

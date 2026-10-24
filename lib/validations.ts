@@ -42,7 +42,13 @@ export const eventSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   date: z.string().datetime("Invalid date format"),
   location: z.string().min(3, "Location is required"),
-  coverImage: z.string().url("Valid image URL required"),
+  coverImage: z.union([
+    z.string().url("Valid image URL required"),
+    z.object({
+      url: z.string().url(),
+      publicId: z.string()
+    })
+  ]),
   duration: z.string().min(1, "Duration is required"),
   maxAttendees: z.number().int().positive().optional().nullable(),
   speakers: z
@@ -51,7 +57,13 @@ export const eventSchema = z.object({
         name: z.string().min(2),
         role: z.string().min(2),
         bio: z.string().default(""),
-        photo: z.string().url().optional().nullable(),
+        photo: z.union([
+          z.string().url().optional().nullable(),
+          z.object({
+            url: z.string().url(),
+            publicId: z.string()
+          })
+        ]).optional(),
       }),
     )
     .optional()

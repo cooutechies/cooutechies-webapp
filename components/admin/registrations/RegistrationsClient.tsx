@@ -28,10 +28,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  AllRegistrationsError,
-  AllRegistrationsSkeleton,
-} from "./AllRegistrationsFallbacks";
+import { AdminSkeleton } from "@/components/admin/shared/admin-skeleton";
+import { AdminErrorState } from "@/components/admin/shared/admin-error-state";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -60,12 +58,19 @@ export function RegistrationsClient() {
 
   // Show loading skeleton
   if (isLoading && currentPage === 1) {
-    return <AllRegistrationsSkeleton />;
+    return <AdminSkeleton layout="table" contentOnly />;
   }
 
   // Show error state
   if (error) {
-    return <AllRegistrationsError error={error as Error} reset={handleRetry} />;
+    return (
+      <AdminErrorState
+        title="Failed to Load Registrations"
+        description="An error occurred while fetching registrations"
+        error={error as Error}
+        reset={handleRetry}
+      />
+    );
   }
 
   const registrations = data?.registrations ?? [];
@@ -161,7 +166,7 @@ export function RegistrationsClient() {
         <>
           {/* Registrations List */}
           {isLoading ? (
-            <AllRegistrationsSkeleton />
+            <AdminSkeleton layout="table" contentOnly />
           ) : (
             <div className="space-y-4">
               {registrations.map((registration, index) => (

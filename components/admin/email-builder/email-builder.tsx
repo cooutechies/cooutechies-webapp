@@ -11,7 +11,7 @@ import { ModeToggle, EditorMode } from "./mode-toggle";
 import { toast } from "sonner";
 import Link from "next/link";
 import { sendCustomBroadcast } from "@/app/actions/emails";
-import { uploadFileToS3 } from "@/lib/uploadFileToS3";
+import { uploadFile } from "@/lib/uploadFile";
 
 export function EmailBuilder() {
   const [subject, setSubject] = useState("");
@@ -47,14 +47,15 @@ export function EmailBuilder() {
       const base64Url = base64Images[i];
 
       try {
-        // Upload to S3
-        const s3Url = await uploadFileToS3(
+        // Upload to Cloudinary
+        const uploadedData = await uploadFile(
           base64Url,
           `email-image-${Date.now()}-${i}.jpg`,
+          "cooutechies/emails"
         );
 
-        // Replace base64 with S3 URL in HTML
-        updatedHtml = updatedHtml.replace(base64Url, s3Url);
+        // Replace base64 with URL in HTML
+        updatedHtml = updatedHtml.replace(base64Url, uploadedData.url);
 
         toast.success(`Uploaded image ${i + 1}/${base64Images.length}`);
       } catch (error) {

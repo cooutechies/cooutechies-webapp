@@ -6,10 +6,11 @@ import Image from "next/image";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { useCoreTeamMembers } from "@/hooks/tanstack-query/use-core-team";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getImageUrl } from "@/lib/utils";
 
 export default function HeroImageGallery() {
   const { data, isLoading, error } = useCoreTeamMembers();
-  const images = data?.members?.map((member) => member.profileImage) ?? [];
+  const images = data?.members?.map((member) => getImageUrl(member.profileImage)).filter(Boolean) ?? [];
 
   const [activeIndex, setActiveIndex] = useState(0);
 

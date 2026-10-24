@@ -3,7 +3,7 @@ import CoreTeamForm from "../../../../../components/admin/core-team/core-team-fo
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import CoreTeamError from "@/components/admin/core-team/core-team-error";
+import { AdminErrorState } from "@/components/admin/shared/admin-error-state";
 
 import type { Metadata } from "next";
 
@@ -34,7 +34,12 @@ export default async function EditCoreTeamPage({
   const response = await getCoreTeamMemberById(id);
 
   if (!response.success || !response.data) {
-    return <CoreTeamError />;
+    return (
+      <AdminErrorState
+        title="Failed to Load Core Team"
+        description="An error occurred while loading team members."
+      />
+    );
   }
 
   // Serialize the member data to plain object

@@ -8,6 +8,7 @@ import {
   Linkedin,
   Instagram,
   ArrowUp,
+  Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -233,7 +234,8 @@ export default function Footer() {
             className="text-sm text-muted-foreground text-center md:text-left"
           >
             © {currentYear} COOU Techies. All rights reserved. Built with{" "}
-            <span className="text-primary animate-pulse">💚</span> by{" "}
+            <Heart className="w-3.5 h-3.5 text-primary fill-primary inline-block align-middle animate-pulse" />{" "}
+            by{" "}
             <a
               href="https://legend4tech.com"
               target="_blank"

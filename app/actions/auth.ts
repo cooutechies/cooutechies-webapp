@@ -3,6 +3,7 @@
 import { signIn, signOut } from "@/auth";
 import { connectToDatabase } from "@/lib/db";
 import { hashPassword } from "@/lib/crypto";
+import { COLLECTIONS } from "@/lib/constants";
 import type {
   LoginPayload,
   RegisterPayload,
@@ -10,8 +11,6 @@ import type {
 } from "@/types/auth.types";
 
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
-const ADMIN_COLLECTION = process.env.ADMIN_COLLECTION!;
-const ACTIVITIES_COLLECTION = process.env.ACTIVITIES_COLLECTION!;
 
 /**
  * Login Server Action
@@ -63,7 +62,7 @@ export async function registerAction(
     }
 
     const { db } = await connectToDatabase();
-    const adminCollection = db.collection(ADMIN_COLLECTION);
+    const adminCollection = db.collection(COLLECTIONS.ADMIN);
 
     const existingAdmin = await adminCollection.findOne({
       email: payload.email.toLowerCase(),
@@ -89,7 +88,7 @@ export async function registerAction(
     });
 
     // Log activity
-    const activitiesCollection = db.collection(ACTIVITIES_COLLECTION);
+    const activitiesCollection = db.collection(COLLECTIONS.ACTIVITIES);
     await activitiesCollection.insertOne({
       action: "admin_registered",
       userId: result.insertedId,

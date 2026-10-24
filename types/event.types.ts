@@ -1,5 +1,10 @@
 import type { ObjectId } from "mongodb";
 
+export interface ImageObject {
+  url: string;
+  publicId: string;
+}
+
 /**
  * Speaker interface for event speakers
  * Changed photo to only accept string | undefined (no null)
@@ -8,7 +13,7 @@ export interface Speaker {
   name: string;
   role: string;
   bio?: string;
-  photo?: string | undefined;
+  photo?: string | ImageObject | undefined;
 }
 
 /**
@@ -22,7 +27,7 @@ export interface Event {
   description: string;
   date: Date;
   location: string;
-  coverImage: string;
+  coverImage: string | ImageObject;
   duration: string;
   speakers: Speaker[];
   maxAttendees?: number | undefined;

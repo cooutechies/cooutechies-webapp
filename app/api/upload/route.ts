@@ -1,12 +1,27 @@
 /**
- * S3 Upload API Route
- * Handles file uploads to AWS S3 bucket
- * Accepts files via FormData and returns the public URL
+ * Cloudinary Upload API Route
+ * Handles file uploads to Cloudinary
+ * Accepts files via FormData and returns the public URL and public_id
  */
 
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { v4 as uuidv4 } from "uuid";
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 import { NextResponse } from "next/server";
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+];
 
 export async function POST(request: Request) {
   try {
@@ -19,50 +34,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Initialize S3 client with credentials from environment variables
-    const s3Client = new S3Client({
-      region: process.env.MY_AWS_REGION as string,
-      credentials: {
-        accessKeyId: process.env.MY_AWS_ACCESS_KEY as string,
-        secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY as string,
-      },
-    });
-
-    // Generate unique filename to prevent collisions
-    const fileExtension = file.name.split(".").pop() || "";
-    const uniqueFileName = `events/${uuidv4()}.${fileExtension}`;
-
-    // Convert file to buffer for S3 upload
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Prepare S3 upload command
-    const command = new PutObjectCommand({
-      Bucket: process.env.MY_AWS_S3_BUCKET_NAME as string,
-      Key: uniqueFileName,
-      Body: buffer,
-      ContentType: file.type,
-    });
-
-    try {
-      // Execute S3 upload
-      await s3Client.send(command);
-    } catch (s3Error) {
-      console.error("S3 Upload Error:", s3Error);
+    // Validate file size (max 5MB per CONTRIBUTING.md)
+    if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        {
-          error: `S3 upload failed: ${
-            s3Error instanceof Error ? s3Error.message : String(s3Error)
-          }`,
-        },
-        { status: 500 },
+        { error: "File size exceeds the 5MB limit" },
+        { status: 400 }
       );
     }
 
-    // Construct public URL for the uploaded file
-    const fileUrl = `https://${process.env.MY_AWS_S3_BUCKET_NAME}.s3.${process.env.MY_AWS_REGION}.amazonaws.com/${uniqueFileName}`;
+    // Validate MIME type per CONTRIBUTING.md
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Invalid file type. Allowed types: JPEG, PNG, WEBP, GIF, SVG" },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json({ success: true, fileUrl });
+    // Convert file to buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const folder = (formData.get("folder") as string) || "cooutechies";
+
+    // Upload to Cloudinary using upload_stream
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: folder },
+        (error, uploadResult) => {
+          if (error || !uploadResult) reject(error || new Error("Upload failed"));
+          else resolve(uploadResult);
+        }
+      );
+
+      // End the stream with the buffer
+      uploadStream.end(buffer);
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      fileUrl: result.secure_url,
+      publicId: result.public_id
+    });
   } catch (error) {
     console.error("Error in upload API route:", error);
     return NextResponse.json(

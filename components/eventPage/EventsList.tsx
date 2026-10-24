@@ -6,7 +6,9 @@ import { Calendar, MapPin, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDuration } from "@/lib/eventDurationUtils";
+import { getImageUrl } from "@/lib/utils";
 import { EventsLoadingSkeleton } from "./EventsLoadingSkeleton";
+import { ErrorFallback, EmptyState } from "@/components/shared";
 
 export function EventsList() {
   const { data, isLoading, error } = useEvents(1, 50);
@@ -19,15 +21,10 @@ export function EventsList() {
     return (
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <Card className="border border-destructive/50 bg-destructive/5">
-            <CardContent className="pt-6">
-              <p className="text-center text-destructive">
-                {error instanceof Error
-                  ? error.message
-                  : "Failed to load events"}
-              </p>
-            </CardContent>
-          </Card>
+          <ErrorFallback
+            title="Failed to load events"
+            message={error instanceof Error ? error.message : "Failed to load events"}
+          />
         </div>
       </section>
     );
@@ -39,13 +36,11 @@ export function EventsList() {
     return (
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <Card className="border border-border">
-            <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground">
-                No events available at the moment. Check back soon!
-              </p>
-            </CardContent>
-          </Card>
+          <EmptyState
+            icon={Calendar}
+            title="No events scheduled"
+            description="No events available at the moment. Check back soon!"
+          />
         </div>
       </section>
     );
@@ -65,7 +60,7 @@ export function EventsList() {
                 {/* Event Image */}
                 <div className="relative w-full aspect-video bg-muted overflow-hidden">
                   <Image
-                    src={event.coverImage || "/placeholder.svg"}
+                    src={getImageUrl(event.coverImage) || "/placeholder.svg"}
                     alt={event.title}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"

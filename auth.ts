@@ -9,10 +9,10 @@ import NextAuth, { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { connectToDatabase } from "@/lib/db";
 import { verifyPassword } from "@/lib/crypto";
+import { COLLECTIONS } from "@/lib/constants";
 import type { AuthJWT, AuthSession, ExtendedUser } from "@/types/auth.types";
 
 const SEVEN_DAYS_IN_SECONDS = 7 * 24 * 60 * 60;
-const ADMIN_COLLECTION = process.env.ADMIN_COLLECTION!;
 
 /**
  * Auth.js v5 Configuration
@@ -33,7 +33,7 @@ const authConfig: NextAuthConfig = {
 
         try {
           const { db } = await connectToDatabase();
-          const adminCollection = db.collection(ADMIN_COLLECTION);
+          const adminCollection = db.collection(COLLECTIONS.ADMIN);
 
           // Query admin user from MongoDB
           const user = await adminCollection.findOne({
@@ -49,10 +49,6 @@ const authConfig: NextAuthConfig = {
             credentials.password as string,
             user.password,
           );
-
-          console.log("[Auth Debug] Input password:", credentials.password);
-          console.log("[Auth Debug] Stored hash:", user.password);
-          console.log("[Auth Debug] Password valid:", isPasswordValid);
 
           if (!isPasswordValid) {
             console.error(
@@ -103,10 +99,6 @@ const authConfig: NextAuthConfig = {
         token.userId = extendedUser.id;
         token.email = extendedUser.email!;
         token.role = extendedUser.role;
-      }
-
-      if (trigger === "update") {
-        console.log("[Auth] JWT updated via trigger");
       }
 
       return token as AuthJWT;

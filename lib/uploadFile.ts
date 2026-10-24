@@ -1,6 +1,6 @@
 /**
- * S3 Upload Utility
- * Client-side utility to upload files to S3 via API route
+ * Cloudinary Upload Utility
+ * Client-side utility to upload files to Cloudinary via API route
  * Converts base64 strings to files before uploading
  */
 
@@ -31,16 +31,22 @@ function base64ToFile(base64String: string, filename: string): File {
   return new File([bytes], filename, { type: mimeType });
 }
 
+export interface UploadedImage {
+  url: string;
+  publicId: string;
+}
+
 /**
- * Uploads a file to S3 via the API route
+ * Uploads a file to Cloudinary via the API route
  * @param file - The file to upload (can be File or base64 string)
  * @param filename - Optional filename (required if file is base64 string)
- * @returns Promise resolving to the public S3 URL
+ * @returns Promise resolving to the UploadedImage object
  */
-export async function uploadFileToS3(
+export async function uploadFile(
   file: File | string,
-  filename?: string
-): Promise<string> {
+  filename?: string,
+  folder?: string
+): Promise<UploadedImage> {
   try {
     const apiUrl = "/api/upload";
 
@@ -58,6 +64,9 @@ export async function uploadFileToS3(
     // Create FormData and append file
     const formData = new FormData();
     formData.append("file", fileToUpload);
+    if (folder) {
+      formData.append("folder", folder);
+    }
 
     // Send upload request
     const response = await fetch(apiUrl, {
@@ -72,9 +81,12 @@ export async function uploadFileToS3(
       throw new Error(`Upload failed with status: ${response.status}`);
     }
 
-    // Extract and return file URL
+    // Extract and return file URL and publicId
     const data = await response.json();
-    return data.fileUrl;
+    return {
+      url: data.fileUrl,
+      publicId: data.publicId
+    };
   } catch (error) {
     console.error("Error uploading file:", error);
     throw new Error(
@@ -86,20 +98,21 @@ export async function uploadFileToS3(
 }
 
 /**
- * Uploads multiple files to S3 in parallel
+ * Uploads multiple files to Cloudinary in parallel
  * @param files - Array of files or base64 strings to upload
  * @param filenames - Optional array of filenames (required if files are base64 strings)
- * @returns Promise resolving to array of public S3 URLs
+ * @returns Promise resolving to array of UploadedImage objects
  */
-export async function uploadMultipleFilesToS3(
+export async function uploadMultipleFiles(
   files: (File | string)[],
-  filenames?: string[]
-): Promise<string[]> {
+  filenames?: string[],
+  folder?: string
+): Promise<UploadedImage[]> {
   try {
     // Upload all files in parallel
     const uploadPromises = files.map((file, index) => {
       const filename = filenames?.[index] || `file-${index}`;
-      return uploadFileToS3(file, filename);
+      return uploadFile(file, filename, folder);
     });
 
     // Wait for all uploads to complete

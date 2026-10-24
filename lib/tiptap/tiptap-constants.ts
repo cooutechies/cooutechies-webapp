@@ -1,0 +1,79 @@
+export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+export const MAC_SYMBOLS: Record<string, string> = {
+  mod: "⌘",
+  command: "⌘",
+  meta: "⌘",
+  ctrl: "⌃",
+  control: "⌃",
+  alt: "⌥",
+  option: "⌥",
+  shift: "⇧",
+  backspace: "Del",
+  delete: "⌦",
+  enter: "⏎",
+  escape: "⎋",
+  capslock: "⇪",
+} as const;
+
+export const SR_ONLY = {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  padding: 0,
+  margin: "-1px",
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+  borderWidth: 0,
+} as const;
+
+export function cn(
+  ...classes: (string | boolean | undefined | null)[]
+): string {
+  return classes.filter(Boolean).join(" ");
+}
+
+/**
+ * Determines if the current platform is macOS
+ */
+export function isMac(): boolean {
+  return (
+    typeof navigator !== "undefined" &&
+    navigator.platform.toLowerCase().includes("mac")
+  );
+}
+
+/**
+ * Formats a shortcut key based on the platform (Mac or non-Mac)
+ */
+export const formatShortcutKey = (
+  key: string,
+  isMacPlatform: boolean,
+  capitalize: boolean = true
+) => {
+  if (isMacPlatform) {
+    const lowerKey = key.toLowerCase();
+    return MAC_SYMBOLS[lowerKey] || (capitalize ? key.toUpperCase() : key);
+  }
+
+  return capitalize ? key.charAt(0).toUpperCase() + key.slice(1) : key;
+};
+
+/**
+ * Parses a shortcut key string into an array of formatted key symbols
+ */
+export const parseShortcutKeys = (props: {
+  shortcutKeys: string | undefined;
+  delimiter?: string;
+  capitalize?: boolean;
+}) => {
+  const { shortcutKeys, delimiter = "+", capitalize = true } = props;
+
+  if (!shortcutKeys) return [];
+
+  return shortcutKeys
+    .split(delimiter)
+    .map((key) => key.trim())
+    .map((key) => formatShortcutKey(key, isMac(), capitalize));
+};

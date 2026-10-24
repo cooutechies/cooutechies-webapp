@@ -5,7 +5,8 @@
  */
 
 import { DashboardClient } from "@/components/admin/home/DashboardClient";
-import { DashboardSkeleton } from "@/components/admin/home/DashboardSkeleton";
+import { AdminSkeleton } from "@/components/admin/shared/admin-skeleton";
+import { Sparkles } from "lucide-react";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -15,7 +16,16 @@ export const metadata = {
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<DashboardSkeleton />}>
+    <Suspense 
+      fallback={
+        <AdminSkeleton 
+          layout="stats-and-list" 
+          title="Dashboard" 
+          description="Welcome back to your admin panel" 
+          icon={<Sparkles className="h-5 w-5 text-primary" />} 
+        />
+      }
+    >
       <DashboardClient />
     </Suspense>
   );

@@ -7,6 +7,9 @@ import { Eye, Calendar, MapPin, Users, Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDuration } from "@/lib/eventDurationUtils";
+import { getImageUrl } from "@/lib/utils";
+
+import { PageSkeleton, ErrorFallback, EmptyState } from "@/components/shared";
 
 export function EventsListAdmin() {
   const { data, isLoading, error } = useEvents(1, 50);
@@ -14,18 +17,7 @@ export function EventsListAdmin() {
   if (isLoading) {
     return (
       <div className="flex-1 p-6">
-        <div className="grid gap-6 max-w-7xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i} className="overflow-hidden">
-              <div className="w-full aspect-video bg-muted animate-pulse" />
-              <CardContent className="p-4 space-y-3">
-                <div className="h-6 bg-muted animate-pulse rounded" />
-                <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
-                <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <PageSkeleton variant="card-grid" itemCount={6} />
       </div>
     );
   }
@@ -33,30 +25,31 @@ export function EventsListAdmin() {
   if (error) {
     return (
       <div className="flex-1 p-6">
-        <Card className="border border-destructive/50">
-          <CardContent className="pt-6">
-            <p className="text-center text-destructive">
-              {error instanceof Error ? error.message : "Failed to load events"}
-            </p>
-          </CardContent>
-        </Card>
+        <ErrorFallback
+          title="Failed to load events"
+          message={error instanceof Error ? error.message : "Failed to load events"}
+        />
       </div>
     );
   }
 
   const events = data?.events || [];
 
+  if (events.length === 0) {
+    return (
+      <div className="flex-1 p-6">
+        <EmptyState
+          icon={Calendar}
+          title="No events yet"
+          description="Create your first event to get started."
+          action={{ label: "Create Event", href: "/admin/events/new" }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 p-6 overflow-auto relative z-10">
-      {events.length === 0 ? (
-        <Card className="border border-border">
-          <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">
-              No events yet. Create one to get started.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
         <div className="grid gap-6 max-w-7xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
             <div key={event._id} className="group flex flex-col h-full">
@@ -64,7 +57,7 @@ export function EventsListAdmin() {
                 {/* Event Image Container */}
                 <div className="relative w-full aspect-video bg-muted overflow-hidden">
                   <Image
-                    src={event.coverImage || "/placeholder.svg"}
+                    src={getImageUrl(event.coverImage) || "/placeholder.svg"}
                     alt={event.title}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -136,7 +129,6 @@ export function EventsListAdmin() {
             </div>
           ))}
         </div>
-      )}
     </div>
   );
 }

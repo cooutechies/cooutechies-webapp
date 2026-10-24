@@ -17,6 +17,7 @@ import {
 } from "./BiographyFallbacks";
 import Image from "next/image";
 import { useCoreTeamMembers } from "@/hooks/tanstack-query/use-core-team";
+import { getImageUrl } from "@/lib/utils";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -306,7 +307,7 @@ export function CoreTeamCards() {
                     {/* Image Container */}
                     <div className="relative h-64 overflow-hidden">
                       <Image
-                        src={member.profileImage}
+                        src={getImageUrl(member.profileImage)}
                         alt={member.name}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
