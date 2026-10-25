@@ -73,6 +73,10 @@ export function EventEmailActionsClient({
   const sendReminderMutation = useSendReminder(eventId);
 
   const handleSendAnnouncement = async () => {
+    const toastId = toast.loading("Sending Event Announcement via Amazon SES...", {
+      description: "Dispatching announcement to all registered community members in secure batches...",
+    });
+
     try {
       const result = await sendAnnouncementMutation.mutateAsync({
         title: eventTitle,
@@ -83,22 +87,31 @@ export function EventEmailActionsClient({
       });
 
       if (result.success) {
-        toast.success("Success", {
-          description: result.message,
+        toast.success("Announcement Delivered! 📢", {
+          id: toastId,
+          description:
+            result.message || "All members have been successfully notified.",
         });
       } else {
-        toast.error("Error", {
-          description: result.error || result.message,
+        toast.error("Announcement Failed", {
+          id: toastId,
+          description: result.error || result.message || "Failed to deliver announcement.",
         });
       }
     } catch (error) {
-      toast.error("Error", {
-        description: "Failed to send announcement",
+      toast.error("Announcement Error", {
+        id: toastId,
+        description:
+          error instanceof Error ? error.message : "Failed to send announcement",
       });
     }
   };
 
   const handleSendReminder = async () => {
+    const toastId = toast.loading("Sending Event Reminders via Amazon SES...", {
+      description: `Dispatching reminders to ${registrations.length} registered attendees...`,
+    });
+
     try {
       const result = await sendReminderMutation.mutateAsync({
         recipients: registrations,
@@ -111,21 +124,26 @@ export function EventEmailActionsClient({
       });
 
       if (result.success) {
-        toast.success("Success", {
-          description: result.message,
+        toast.success("Reminders Sent Successfully! ⏰", {
+          id: toastId,
+          description:
+            result.message || `Reminders delivered to ${registrations.length} attendees.`,
         });
         setSentReminders((prev) => ({
           ...prev,
           [selectedTimeFrame]: true,
         }));
       } else {
-        toast.error("Error", {
-          description: result.error || result.message,
+        toast.error("Reminder Failed", {
+          id: toastId,
+          description: result.error || result.message || "Failed to deliver reminder.",
         });
       }
     } catch (error) {
-      toast.error("Error", {
-        description: "Failed to send reminder",
+      toast.error("Reminder Error", {
+        id: toastId,
+        description:
+          error instanceof Error ? error.message : "Failed to send reminder",
       });
     }
   };

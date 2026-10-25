@@ -36,7 +36,7 @@ function createImageHTML(
   alt: string,
   alignment: "left" | "center" | "right"
 ): string {
-  return `<p style="text-align: ${alignment}; margin: 24px 0;"><img src="${url}" alt="${alt}" style="max-width: 400px; max-height: 300px; width: auto; height: auto; display: inline-block; border-radius: 14px; border: 0;" /></p>`;
+  return `<p style="text-align: ${alignment}; margin: 24px 0;"><img src="${url}" alt="${alt}" style="max-width: 100%; max-height: 460px; width: auto; height: auto; display: inline-block; border-radius: 14px; border: 0;" /></p>`;
 }
 
 export function UnifiedEditor({

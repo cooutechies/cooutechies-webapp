@@ -87,26 +87,43 @@ export function EmailBuilder() {
       let finalHtmlContent = htmlContent;
 
       if (hasPendingImages) {
-        toast.info("Uploading images before sending...");
+        toast.info("Uploading broadcast images...", {
+          description: "Preparing CDN image URLs for email delivery.",
+        });
         finalHtmlContent = await uploadPendingImages(htmlContent);
 
         // Update the local state with uploaded URLs
         setHtmlContent(finalHtmlContent);
       }
 
+      // Show active sending progress toast
+      const toastId = toast.loading("Broadcasting email via Amazon SES...", {
+        description: "Delivering to community member inboxes in secure batches...",
+      });
+
       // Send the email with uploaded image URLs
       const result = await sendCustomBroadcast(subject, finalHtmlContent);
 
       if (result.success) {
-        toast.success(result.message);
+        toast.success("Broadcast Delivered Successfully! 🚀", {
+          id: toastId,
+          description:
+            result.message || "All members have been successfully notified.",
+        });
         setSubject("");
         setHtmlContent("");
       } else {
-        toast.error(result.message || "Failed to send email");
+        toast.error("Broadcast Dispatch Failed", {
+          id: toastId,
+          description: result.message || "Failed to deliver email broadcast.",
+        });
       }
     } catch (error) {
       console.error("Send error:", error);
-      toast.error("Failed to send email broadcast");
+      toast.error("Failed to send email broadcast", {
+        description:
+          error instanceof Error ? error.message : "Unexpected dispatch error",
+      });
     } finally {
       setSending(false);
     }

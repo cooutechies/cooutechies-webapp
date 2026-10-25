@@ -41,7 +41,7 @@ export function InsertLinkDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass border-glow max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="bg-card border border-border shadow-2xl max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
             <Link className="h-5 w-5 text-primary" />

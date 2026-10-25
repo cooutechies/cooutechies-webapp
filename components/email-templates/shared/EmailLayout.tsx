@@ -10,11 +10,8 @@ import {
 } from "@react-email/components";
 import {
   mainLayout,
-  outerContainer,
-  innerContainer,
+  emailContainer,
   headerSection,
-  headerLogo,
-  gradientLine,
 } from "../styles/emailTheme";
 import { EmailFooter } from "./EmailFooter";
 
@@ -30,44 +27,48 @@ export function EmailLayout({
   showFooter = true,
 }: EmailLayoutProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://cooutechies.com";
-  const logoUrl = `${baseUrl}/email-logo.png`;
+  // Official high-res white brand logo on dark canvas
+  const logoUrl = `${baseUrl}/cooutechies-logo2.png`;
 
   return (
-    <Html>
+    <Html lang="en">
       <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>{`
+          img {
+            max-width: 100% !important;
+            height: auto !important;
+          }
+          body {
+            -webkit-text-size-adjust: 100% !important;
+          }
+        `}</style>
       </Head>
-
       <Preview>{previewText}</Preview>
-
       <Body style={mainLayout}>
-        <Container style={outerContainer}>
-          <Container style={innerContainer}>
-            {/* Header with Logo */}
-            <Section style={headerSection}>
-              <Img
-                src={logoUrl}
-                alt="COOU Techies"
-                width="150"
-                height="150"
-                style={headerLogo}
-              />
-              <Section style={gradientLine} />
-            </Section>
+        <Container style={emailContainer}>
+          {/* Brand Logo Header - Bold, natural 1.95:1 aspect ratio */}
+          <Section style={headerSection}>
+            <Img
+              src={logoUrl}
+              alt="COOU Techies"
+              width="160"
+              height="82"
+              style={{
+                display: "block",
+                margin: "0 auto",
+                width: "160px",
+                height: "auto",
+                maxWidth: "100%",
+              }}
+            />
+          </Section>
 
-            {/* Main Email Content */}
-            {children}
+          {/* Main Email Content */}
+          {children}
 
-            {/* Common Footer */}
-            {showFooter && <EmailFooter />}
-          </Container>
+          {/* Common Footer */}
+          {showFooter && <EmailFooter />}
         </Container>
       </Body>
     </Html>

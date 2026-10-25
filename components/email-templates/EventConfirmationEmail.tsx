@@ -3,22 +3,19 @@ import { Button, Heading, Section, Text } from "@react-email/components";
 import { EmailLayout } from "./shared/EmailLayout";
 import { EmailBadge } from "./shared/EmailBadge";
 import { EventDetailsCard } from "./sections/EventDetailsCard";
-import { EventExpectationsSection } from "./sections/EventExpectationsSection";
-import { EventPreparationTips } from "./sections/EventPreparationTips";
 import {
-  heroSection,
   mainHeading,
-  gradientText,
-  heroSubtitle,
-  greetingSection,
-  greetingText,
-  nameHighlight,
   paragraphText,
+  nameHighlight,
   highlightStrong,
+  highlightsSection,
+  highlightsTitle,
+  bulletPoint,
+  bulletIcon,
   ctaSection,
-  ctaIntro,
   ctaButton,
   ctaSubtext,
+  textMuted,
 } from "./styles/emailTheme";
 
 interface EventConfirmationEmailProps {
@@ -44,41 +41,21 @@ export default function EventConfirmationEmail({
 
   return (
     <EmailLayout
-      previewText={`You're registered for ${eventTitle}! 🎉 See you on ${eventDate}`}
+      previewText={`Your spot is reserved for ${eventTitle}! 🎟️ See you on ${eventDate}`}
     >
       {/* Confirmation Badge */}
-      <EmailBadge text="✅ REGISTRATION CONFIRMED" />
+      <EmailBadge text="🎟️ Registration Confirmed" />
 
-      {/* Hero Heading */}
-      <Section style={heroSection}>
-        <Heading style={mainHeading}>
-          You&apos;re
-          <br />
-          <span style={gradientText}>All Set!</span>
-        </Heading>
-        <Text style={heroSubtitle}>
-          Your spot is reserved for this amazing event
-        </Text>
-      </Section>
+      {/* Main Heading */}
+      <Heading style={mainHeading}>You&apos;re all set for the event!</Heading>
 
-      {/* Personalized Greeting */}
-      <Section style={greetingSection}>
-        <Text style={greetingText}>
-          Hey <span style={nameHighlight}>{firstName}</span> 👋
-        </Text>
-        <Text style={paragraphText}>
-          🎉 We&apos;re excited to confirm your registration for{" "}
-          <strong style={highlightStrong}>{eventTitle}</strong>! This is going
-          to be an incredible experience, and we can&apos;t wait to see you
-          there.
-        </Text>
-        <Text style={paragraphText}>
-          Mark your calendar and get ready for an unforgettable day of learning,
-          networking, and innovation with fellow tech enthusiasts!
-        </Text>
-      </Section>
+      <Text style={paragraphText}>
+        Hey <span style={nameHighlight}>{firstName}</span>, we are excited to
+        confirm your spot for{" "}
+        <strong style={highlightStrong}>{eventTitle}</strong>.
+      </Text>
 
-      {/* Structured Event Details Card */}
+      {/* Clean Structured Event Details Card */}
       <EventDetailsCard
         eventTitle={eventTitle}
         eventDate={eventDate}
@@ -87,23 +64,40 @@ export default function EventConfirmationEmail({
         eventDescription={eventDescription}
       />
 
-      {/* Expectations Breakdown */}
-      <EventExpectationsSection />
-
-      {/* Preparation Checklist */}
-      <EventPreparationTips />
+      {/* Preparation Notes (Unboxed) */}
+      <Section style={highlightsSection}>
+        <Text style={highlightsTitle}>Important Reminders:</Text>
+        <Text style={bulletPoint}>
+          <span style={bulletIcon}>✦</span>{" "}
+          <strong style={highlightStrong}>Arrive Early:</strong> Please arrive
+          15 minutes before the start time for check-in.
+        </Text>
+        <Text style={bulletPoint}>
+          <span style={bulletIcon}>✦</span>{" "}
+          <strong style={highlightStrong}>What to Bring:</strong> Bring your
+          student ID, a laptop or notebook, and plenty of curiosity.
+        </Text>
+        <Text style={bulletPoint}>
+          <span style={bulletIcon}>✦</span>{" "}
+          <strong style={highlightStrong}>Assistance:</strong> If you have any
+          questions or accessibility needs, reply to this email anytime.
+        </Text>
+      </Section>
 
       {/* WhatsApp Community CTA */}
       <Section style={ctaSection}>
-        <Text style={ctaIntro}>🔥 Stay Connected</Text>
         <Button style={ctaButton} href={whatsappChannelLink}>
-          Join Our WhatsApp Channel →
+          Join Event WhatsApp Channel →
         </Button>
         <Text style={ctaSubtext}>
-          Get real-time updates and connect with other attendees before the
-          event
+          Get live updates, connect with attendees, and ask speakers questions.
         </Text>
       </Section>
+
+      <Text style={textMuted}>
+        We look forward to seeing you there! If your plans change and you cannot
+        attend, please let us know so we can open the spot to other students.
+      </Text>
     </EmailLayout>
   );
 }

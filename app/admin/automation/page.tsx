@@ -138,9 +138,9 @@ export default function AutomationPage() {
                 logging system.
               </p>
               <p>
-                <strong className="text-foreground">Resend API:</strong> All
-                emails are sent via the Resend email service, ensuring reliable
-                delivery and detailed tracking.
+                <strong className="text-foreground">Amazon SES:</strong> All
+                emails are sent via Amazon Simple Email Service (SES), ensuring reliable
+                high-volume delivery, DKIM security, and detailed audit tracking.
               </p>
             </CardContent>
           </Card>

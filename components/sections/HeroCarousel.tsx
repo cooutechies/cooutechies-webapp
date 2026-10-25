@@ -32,6 +32,30 @@ const slides = [
       "Connect with like-minded innovators, share knowledge, and build projects that make a difference.",
     image: "/event-3.jpeg",
   },
+  {
+    id: 4,
+    title: "Empower & Connect",
+    subtitle: "Real Community Impact",
+    description:
+      "Join student developers, designers, and tech enthusiasts shaping technology and innovation across campus.",
+    image: "/downloadTech1.png",
+  },
+  {
+    id: 5,
+    title: "Inspire The Future",
+    subtitle: "Leadership & Growth",
+    description:
+      "Hear from industry trailblazers, master in-demand technical skills, and turn your tech passions into reality.",
+    image: "/downloadTech2.png",
+  },
+  {
+    id: 6,
+    title: "Celebrate Every Win",
+    subtitle: "Vibrant Community Moments",
+    description:
+      "Collaborate on real-world projects, showcase your creativity, and make lifelong tech connections.",
+    image: "/downloadTech3.png",
+  },
 ];
 
 export default function HeroCarousel() {

@@ -75,6 +75,8 @@ export interface SerializedEmailLog {
   recipientCount: number;
   sentAt: string;
   subject: string;
+  sesMessageId?: string;
+  sesMessageIds?: string[];
   resendId?: string;
   timeFrame?: "1-week" | "3-days" | "tomorrow" | "today";
   htmlContentLength?: number;

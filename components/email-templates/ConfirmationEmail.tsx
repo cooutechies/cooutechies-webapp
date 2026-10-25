@@ -2,23 +2,19 @@ import * as React from "react";
 import { Button, Heading, Section, Text } from "@react-email/components";
 import { EmailLayout } from "./shared/EmailLayout";
 import { EmailBadge } from "./shared/EmailBadge";
-import { CommunityBenefitsSection } from "./sections/CommunityBenefitsSection";
-import { NextStepsSection } from "./sections/NextStepsSection";
-import { CommunityStatsSection } from "./sections/CommunityStatsSection";
 import {
-  heroSection,
   mainHeading,
-  gradientText,
-  heroSubtitle,
-  greetingSection,
-  greetingText,
-  nameHighlight,
   paragraphText,
+  nameHighlight,
   highlightStrong,
+  highlightsSection,
+  highlightsTitle,
+  bulletPoint,
+  bulletIcon,
   ctaSection,
-  ctaIntro,
   ctaButton,
   ctaSubtext,
+  textMuted,
 } from "./styles/emailTheme";
 
 interface ConfirmationEmailProps {
@@ -36,58 +32,62 @@ export default function ConfirmationEmail({
     <EmailLayout
       previewText={`Welcome to COOU Techies, ${firstName}! 🚀 You're now part of 500+ tech innovators`}
     >
-      {/* Welcome Badge */}
-      <EmailBadge text="✨ WELCOME TO THE COMMUNITY" />
+      {/* Badge */}
+      <EmailBadge text="✨ Community Welcome" />
 
-      {/* Hero Heading */}
-      <Section style={heroSection}>
-        <Heading style={mainHeading}>
-          Welcome to
-          <br />
-          <span style={gradientText}>COOU Techies!</span>
-        </Heading>
-        <Text style={heroSubtitle}>
-          You&apos;re officially part of the most vibrant tech community
-        </Text>
-      </Section>
+      {/* Main Heading */}
+      <Heading style={mainHeading}>
+        Welcome to the community, <span style={nameHighlight}>{firstName}</span>!
+      </Heading>
 
-      {/* Personalized Greeting */}
-      <Section style={greetingSection}>
-        <Text style={greetingText}>
-          Hey <span style={nameHighlight}>{firstName}</span> 👋
+      {/* Body Copy */}
+      <Text style={paragraphText}>
+        Thank you for joining <strong style={highlightStrong}>COOU Techies</strong>.
+        You are now part of a vibrant family of over 500+ student developers,
+        designers, and innovators at Chukwuemeka Odumegwu Ojukwu University.
+      </Text>
+
+      <Text style={paragraphText}>
+        Whether you are writing your first line of code, designing interfaces, or
+        building full-stack applications, you have found the right place to learn,
+        collaborate, and grow.
+      </Text>
+
+      {/* Open Highlights Section (No cramped inner box!) */}
+      <Section style={highlightsSection}>
+        <Text style={highlightsTitle}>Here is what awaits you:</Text>
+        <Text style={bulletPoint}>
+          <span style={bulletIcon}>✦</span>{" "}
+          <strong style={highlightStrong}>Hands-on Workshops:</strong> Master
+          web dev, mobile apps, UI/UX, AI, and cloud fundamentals.
         </Text>
-        <Text style={paragraphText}>
-          🎉 Thank you for joining COOU Techies! We&apos;re absolutely thrilled
-          to have you as part of our growing family of{" "}
-          <strong style={highlightStrong}>500+ tech enthusiasts</strong>,
-          innovators, and future industry leaders.
+        <Text style={bulletPoint}>
+          <span style={bulletIcon}>✦</span>{" "}
+          <strong style={highlightStrong}>Hackathons & Build Sessions:</strong>{" "}
+          Collaborate on real-world projects and build an impressive portfolio.
         </Text>
-        <Text style={paragraphText}>
-          Your journey into the world of technology just got a whole lot more
-          exciting. Here&apos;s what makes our community special and what awaits
-          you:
+        <Text style={bulletPoint}>
+          <span style={bulletIcon}>✦</span>{" "}
+          <strong style={highlightStrong}>Community & Mentorship:</strong>{" "}
+          Connect with peers, alumni mentors, and internship opportunities.
         </Text>
       </Section>
 
       {/* Primary WhatsApp CTA */}
       <Section style={ctaSection}>
-        <Text style={ctaIntro}>🔥 Ready to dive in?</Text>
         <Button style={ctaButton} href={whatsappChannelLink}>
           Join Our WhatsApp Community →
         </Button>
         <Text style={ctaSubtext}>
-          Connect instantly with 500+ passionate tech enthusiasts
+          Our WhatsApp channel is the primary hub for live discussions,
+          announcements, and networking.
         </Text>
       </Section>
 
-      {/* Benefits Showcase */}
-      <CommunityBenefitsSection />
-
-      {/* Next Steps Checklist */}
-      <NextStepsSection />
-
-      {/* Stats Counter */}
-      <CommunityStatsSection />
+      <Text style={textMuted}>
+        Tip: Introduce yourself in the channel and let everyone know what tech
+        field you are excited to explore!
+      </Text>
     </EmailLayout>
   );
 }

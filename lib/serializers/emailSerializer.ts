@@ -28,6 +28,8 @@ export function serializeEmailLog(
     recipientCount: Number(doc.recipientCount ?? 0),
     sentAt: sentAtStr,
     subject: typeof doc.subject === "string" ? doc.subject : "",
+    sesMessageId: typeof doc.sesMessageId === "string" ? doc.sesMessageId : undefined,
+    sesMessageIds: Array.isArray(doc.sesMessageIds) ? (doc.sesMessageIds as string[]) : undefined,
     resendId: typeof doc.resendId === "string" ? doc.resendId : undefined,
     timeFrame: typeof doc.timeFrame === "string" ? (doc.timeFrame as SerializedEmailLog["timeFrame"]) : undefined,
     htmlContentLength: typeof doc.htmlContentLength === "number" ? doc.htmlContentLength : undefined,

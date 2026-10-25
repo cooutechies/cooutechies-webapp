@@ -1,15 +1,18 @@
 /**
  * emailService.ts
  *
- * Centralized service for all outbound emails via Resend.
+ * Centralized service for all outbound emails via Amazon SES.
  * Handles rendering, batching, error recovery, deduplication, and audit logging.
  */
 
-import { Resend } from "resend";
 import { ObjectId, type Filter, type Document } from "mongodb";
 import { connectToDatabase } from "@/lib/db";
 import { COLLECTIONS, ACTIVITY_ACTIONS, EMAIL_TYPES } from "@/lib/constants";
 import { serializeEmailLogs } from "@/lib/serializers";
+import {
+  sendSesSingleEmail,
+  sendSesBccBroadcast,
+} from "@/lib/email/sesDispatcher";
 import ConfirmationEmail from "@/components/email-templates/ConfirmationEmail";
 import EventConfirmationEmail from "@/components/email-templates/EventConfirmationEmail";
 import EventAnnouncementEmail from "@/components/email-templates/event-announcement-email";
@@ -17,9 +20,6 @@ import EventReminderEmail from "@/components/email-templates/event-reminder-emai
 import CustomBroadcastEmail from "@/components/email-templates/custom-broadcast-email";
 import type { SerializedEmailLog } from "@/types/serialized.types";
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const resend = resendApiKey ? new Resend(resendApiKey) : null;
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "COOU Techies <team@cooutechies.org>";
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export interface SendCommunityWelcomeOptions {
@@ -28,27 +28,21 @@ export interface SendCommunityWelcomeOptions {
 }
 
 /**
- * Send welcome confirmation email to new community member
+ * Send welcome confirmation email to new community member via Amazon SES
  */
 export async function sendCommunityWelcomeEmailService({
   firstName,
   email,
 }: SendCommunityWelcomeOptions): Promise<{ success: boolean; resendId?: string }> {
-  if (!resend) {
-    console.warn("[EmailService] RESEND_API_KEY not configured — skipping welcome email.");
-    return { success: true };
-  }
-
   try {
-    const { data, error } = await resend.emails.send({
-      from: FROM_EMAIL,
+    const result = await sendSesSingleEmail({
       to: email,
       subject: "Welcome to COOU Techies! 🚀",
-      react: ConfirmationEmail({ firstName }),
+      reactElement: ConfirmationEmail({ firstName }),
     });
 
-    if (error) {
-      console.error("[EmailService:Welcome] Resend error:", error);
+    if (!result.success) {
+      console.error("[EmailService:Welcome] SES error:", result.error);
       return { success: false };
     }
 
@@ -60,10 +54,11 @@ export async function sendCommunityWelcomeEmailService({
       trigger: "auto",
       sentAt: new Date(),
       subject: "Welcome to COOU Techies! 🚀",
-      resendId: data?.id,
+      sesMessageId: result.messageId,
+      resendId: result.messageId, // Backward compatibility for existing logs
     });
 
-    return { success: true, resendId: data?.id };
+    return { success: true, resendId: result.messageId };
   } catch (error) {
     console.error("[EmailService:Welcome] Unexpected dispatch error:", error);
     return { success: false };
@@ -83,22 +78,16 @@ export interface SendEventConfirmationOptions {
 }
 
 /**
- * Send event registration confirmation ticket email
+ * Send event registration confirmation ticket email via Amazon SES
  */
 export async function sendEventConfirmationEmailService(
   options: SendEventConfirmationOptions
 ): Promise<{ success: boolean; resendId?: string }> {
-  if (!resend) {
-    console.warn("[EmailService] RESEND_API_KEY not configured — skipping event confirmation email.");
-    return { success: true };
-  }
-
   try {
-    const { data, error } = await resend.emails.send({
-      from: FROM_EMAIL,
+    const result = await sendSesSingleEmail({
       to: options.email,
       subject: `Registration Confirmed: ${options.eventTitle} 🎟️`,
-      react: EventConfirmationEmail({
+      reactElement: EventConfirmationEmail({
         firstName: options.firstName,
         eventTitle: options.eventTitle,
         eventDate: options.eventDate,
@@ -108,8 +97,8 @@ export async function sendEventConfirmationEmailService(
       }),
     });
 
-    if (error) {
-      console.error("[EmailService:EventConfirmation] Resend error:", error);
+    if (!result.success) {
+      console.error("[EmailService:EventConfirmation] SES error:", result.error);
       return { success: false };
     }
 
@@ -122,10 +111,11 @@ export async function sendEventConfirmationEmailService(
       trigger: "auto",
       sentAt: new Date(),
       subject: `Registration Confirmed: ${options.eventTitle} 🎟️`,
-      resendId: data?.id,
+      sesMessageId: result.messageId,
+      resendId: result.messageId,
     });
 
-    return { success: true, resendId: data?.id };
+    return { success: true, resendId: result.messageId };
   } catch (error) {
     console.error("[EmailService:EventConfirmation] Unexpected dispatch error:", error);
     return { success: false };
@@ -133,7 +123,7 @@ export async function sendEventConfirmationEmailService(
 }
 
 /**
- * Send event announcement to community members
+ * Send event announcement to community members using Strategy A (BCC Chunking)
  */
 export async function sendEventAnnouncementEmailService(
   eventId: string
@@ -154,42 +144,34 @@ export async function sendEventAnnouncementEmailService(
     .toArray();
 
   if (registrations.length === 0) {
-    return { success: true, recipientCount: 0, message: "No registered community members to notify" };
+    return {
+      success: true,
+      recipientCount: 0,
+      message: "No registered community members to notify",
+    };
   }
 
   const emails = registrations.map((r) => r.email).filter(Boolean);
   const eventImage = typeof event.coverImage === "string" ? event.coverImage : event.coverImage?.url;
   const registrationLink = `${BASE_URL}/events/${event._id}`;
 
-  if (resend) {
-    // Send in batches of 50 to respect Resend rate limits
-    const batchSize = 50;
-    for (let i = 0; i < emails.length; i += batchSize) {
-      const batch = emails.slice(i, i + batchSize);
-      await resend.emails.send({
-        from: FROM_EMAIL,
-        to: batch,
-        subject: `New Event: ${event.title} 🚀`,
-        react: EventAnnouncementEmail({
-          eventTitle: event.title,
-          eventDescription: event.description,
-          eventDate: new Date(event.date).toLocaleDateString("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          eventLocation: event.location,
-          eventImage,
-          registrationLink,
-        }),
-      });
-    }
-  } else {
-    console.info(
-      `[EmailService:Dev] RESEND_API_KEY not configured. Announcement for "${event.title}" would be sent to ${emails.length} recipients.`
-    );
-  }
+  const broadcastResult = await sendSesBccBroadcast({
+    recipients: emails,
+    subject: `New Event: ${event.title} 🚀`,
+    reactElement: EventAnnouncementEmail({
+      eventTitle: event.title,
+      eventDescription: event.description,
+      eventDate: new Date(event.date).toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      eventLocation: event.location,
+      eventImage,
+      registrationLink,
+    }),
+  });
 
   await Promise.all([
     db.collection(COLLECTIONS.EMAIL_LOGS).insertOne({
@@ -199,6 +181,7 @@ export async function sendEventAnnouncementEmailService(
       trigger: "manual",
       sentAt: new Date(),
       subject: `New Event: ${event.title} 🚀`,
+      sesMessageIds: broadcastResult.messageIds,
     }),
     db.collection(COLLECTIONS.EVENTS).updateOne(
       { _id: event._id },
@@ -212,7 +195,11 @@ export async function sendEventAnnouncementEmailService(
     }),
   ]);
 
-  return { success: true, recipientCount: emails.length, message: "Announcement sent successfully" };
+  return {
+    success: broadcastResult.success,
+    recipientCount: emails.length,
+    message: `Announcement successfully dispatched to ${emails.length} members!`,
+  };
 }
 
 /**
@@ -250,29 +237,24 @@ export async function sendEventReminderEmailService(
   }
 
   const eventLink = `${BASE_URL}/events/${eventId}`;
+  const validAttendees = attendees.filter((a) => Boolean(a.email));
 
-  if (resend) {
-    // Send to attendees
-    for (const attendee of attendees) {
-      if (!attendee.email) continue;
-      await resend.emails.send({
-        from: FROM_EMAIL,
-        to: attendee.email,
-        subject: `Reminder: ${event.title} is coming up! ⏰`,
-        react: EventReminderEmail({
-          recipientName: attendee.firstName || "Attendee",
-          eventTitle: event.title,
-          eventDate: new Date(event.date).toLocaleDateString(),
-          eventLocation: event.location,
-          timeFrame,
-          eventLink,
-        }),
-      });
-    }
-  } else {
-    console.info(
-      `[EmailService:Dev] RESEND_API_KEY not configured. ${timeFrame} reminder for "${event.title}" would be sent to ${attendees.length} recipients.`
-    );
+  // Send reminders individually to personalize recipient name
+  const messageIds: string[] = [];
+  for (const attendee of validAttendees) {
+    const res = await sendSesSingleEmail({
+      to: attendee.email,
+      subject: `Reminder: ${event.title} is coming up! ⏰`,
+      reactElement: EventReminderEmail({
+        recipientName: attendee.firstName || "Attendee",
+        eventTitle: event.title,
+        eventDate: new Date(event.date).toLocaleDateString(),
+        eventLocation: event.location,
+        timeFrame,
+        eventLink,
+      }),
+    });
+    if (res.messageId) messageIds.push(res.messageId);
   }
 
   await Promise.all([
@@ -280,29 +262,29 @@ export async function sendEventReminderEmailService(
       eventId: eventObjectId,
       emailType: EMAIL_TYPES.EVENT_REMINDER,
       timeFrame,
-      recipientCount: attendees.length,
+      recipientCount: validAttendees.length,
       trigger: "auto",
       sentAt: new Date(),
       subject: `Reminder: ${event.title} is coming up! ⏰`,
+      sesMessageIds: messageIds,
     }),
     db.collection(COLLECTIONS.ACTIVITIES).insertOne({
       action: ACTIVITY_ACTIONS.REMINDER_SENT,
       eventId: eventObjectId,
-      details: `${timeFrame} reminder sent to ${attendees.length} attendees for "${event.title}"`,
+      details: `${timeFrame} reminder sent to ${validAttendees.length} attendees for "${event.title}"`,
       createdAt: new Date(),
     }),
   ]);
 
-  return { success: true, recipientCount: attendees.length };
+  return { success: true, recipientCount: validAttendees.length };
 }
 
 /**
- * Send custom broadcast email authored with TipTap editor
+ * Send custom broadcast email authored with TipTap editor using Strategy A (BCC Chunking)
  */
 export async function sendCustomBroadcastService({
   subject,
   htmlContent,
-  recipientType = "all",
 }: {
   subject: string;
   htmlContent: string;
@@ -321,21 +303,14 @@ export async function sendCustomBroadcastService({
     return { success: true, recipientCount: 0 };
   }
 
-  if (resend) {
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: emails,
+  const broadcastResult = await sendSesBccBroadcast({
+    recipients: emails,
+    subject,
+    reactElement: CustomBroadcastEmail({
       subject,
-      react: CustomBroadcastEmail({
-        subject,
-        htmlContent,
-      }),
-    });
-  } else {
-    console.info(
-      `[EmailService:Dev] RESEND_API_KEY not configured. Broadcast "${subject}" would be sent to ${emails.length} recipients.`
-    );
-  }
+      htmlContent,
+    }),
+  });
 
   await Promise.all([
     db.collection(COLLECTIONS.EMAIL_LOGS).insertOne({
@@ -345,6 +320,7 @@ export async function sendCustomBroadcastService({
       sentAt: new Date(),
       subject,
       htmlContentLength: htmlContent.length,
+      sesMessageIds: broadcastResult.messageIds,
     }),
     db.collection(COLLECTIONS.ACTIVITIES).insertOne({
       action: ACTIVITY_ACTIONS.BROADCAST_SENT,
@@ -353,7 +329,7 @@ export async function sendCustomBroadcastService({
     }),
   ]);
 
-  return { success: true, recipientCount: emails.length };
+  return { success: broadcastResult.success, recipientCount: emails.length };
 }
 
 /**
@@ -373,7 +349,13 @@ export async function getEmailLogsService(
   }
 
   const [rawLogs, total] = await Promise.all([
-    db.collection(COLLECTIONS.EMAIL_LOGS).find(filter).sort({ sentAt: -1 }).skip(skip).limit(limit).toArray(),
+    db
+      .collection(COLLECTIONS.EMAIL_LOGS)
+      .find(filter)
+      .sort({ sentAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray(),
     db.collection(COLLECTIONS.EMAIL_LOGS).countDocuments(filter),
   ]);
 
@@ -435,4 +417,3 @@ export async function hasAnnouncementBeenSentService(
 
   return event?.announcementSent === true;
 }
-
